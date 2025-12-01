@@ -1,0 +1,19 @@
+/* Main header styling */
+.header {
+  background-color: #F0F7FB; /* Light blue background */
+  padding: 0.8rem 2rem; /* Space inside header: top/bottom, left/right */
+  display: flex;
+  align-items: center; /* Center content vertically */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow at bottom */
+  height: 64px; /* Fixed height */
+}
+
+/* App name/logo styling */
+.app-name {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-weight: bold; /* Make text bold */
+  color: #3D2D4C; /* Dark purple color */
+  font-size: 1.5rem; /* Text size */
+  cursor: pointer; /* Show hand cursor when hovering over logo */
+  margin: 0; 
+}

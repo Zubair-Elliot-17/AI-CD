@@ -1,0 +1,97 @@
+/* Main page container */
+.history-page {
+  display: flex;
+  flex-direction: column; /* Stack header above content */
+  height: 100vh; /* Full screen height */
+  background-color: #ffffff;
+}
+
+/* Content area below header */
+.main-content {
+  display: flex;
+  flex: 1; /* Take remaining space */
+}
+
+/* Main content area */
+.content-area {
+  display: flex;
+  flex: 1; /* Take remaining space */
+  padding: 2rem;
+  gap: 2rem; /* Space between elements */
+}
+
+/* Container for the history list */
+.history-container-full {
+  flex: 1; /* Take all available space */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 1rem; /* Space between items */
+}
+
+/* Controls at the top (clear history button) */
+.history-controls {
+  display: flex;
+  justify-content: flex-end; /* Button on the right */
+  margin-bottom: 1rem;
+}
+
+/* Scrollable list of history items */
+.history-list {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 0.5rem; /* Space between items */
+  overflow-y: auto; /* Scroll if too many items */
+  flex: 1; /* Take remaining space */
+}
+
+/* Loading spinner */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  flex: 1; /* Take full space */
+}
+
+.loading-indicator .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #8E12D5; /* Purple spinner */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* Empty state when no analyses */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  flex: 1; /* Take full space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+}
+
+/* Error message styling */
+.error-message {
+  background-color: #ffe6e6;
+  color: #d63031;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #d63031; /* Red accent on left */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

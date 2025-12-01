@@ -1,0 +1,119 @@
+/* Container styles for the text input component */
+.text-input-container {
+  position: relative;
+  width: 100%;
+  height: 100%; /* Fill parent container */
+  border: 1px solid #000000;
+  border-radius: 10px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent content from breaking rounded corners */
+}
+
+/* Main textarea styling */
+.text-input-textarea {
+  width: 100%;
+  flex: 1; /* Take available vertical space */
+  padding: 12px 12px 50px 12px; /* Extra bottom padding for footer */
+  border: none;
+  outline: none;
+  resize: none; /* Disable manual resizing */
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #000000;
+  background: transparent;
+  vertical-align: top; /* Prevent extra space below textarea */
+}
+
+/* Placeholder text styling */
+.text-input-textarea::placeholder {
+  color: #999999;
+}
+
+/* Disabled state styling */
+.text-input-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Footer container with absolute positioning */
+.text-input-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44px; /* Fixed footer height */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: white;
+  border-top: 1px solid transparent; /* Reserved for potential border */
+}
+
+/* Character counter styling */
+.text-input-counter {
+  font-size: 12px;
+  color: #000000;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Over-limit counter state */
+.text-input-counter-over-limit {
+  color: #ff0000 !important; /* Red text when over character limit */
+  font-weight: 500;
+}
+
+/* Action buttons container */
+.text-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spacing between buttons */
+}
+
+/* File attachment button hover effect */
+.text-input-attach-button {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.text-input-attach-button:hover {
+  opacity: 0.8;
+}
+
+/* Submit button interactive states */
+.text-input-submit-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.text-input-submit-button:hover:not([aria-disabled="true"]) {
+  transform: translateY(-1px); /* Lift effect on hover */
+  box-shadow: 0 2px 6px rgba(142, 18, 213, 0.3); /* Purple shadow */
+}
+
+.text-input-submit-button:active:not([aria-disabled="true"]) {
+  transform: translateY(0); /* Reset lift when clicked */
+}
+
+/* Focus indicator for accessibility */
+.text-input-container:focus-within {
+  outline: 2px solid #8E12D5; /* Purple focus ring */
+  outline-offset: 1px;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .text-input-textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .text-input-footer {
+    height: 48px; /* Larger touch target */
+    padding: 0 16px; /* Increased padding */
+  }
+  
+  .text-input-actions {
+    gap: 12px; /* More spacing between buttons */
+  }
+}

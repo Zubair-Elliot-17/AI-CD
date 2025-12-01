@@ -1,0 +1,77 @@
+/* Main container for the component */
+.highlighted-text {
+  width: 100%;
+}
+
+/* White box that holds everything */
+.highlighted-text-container {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Area where the actual text is displayed */
+.highlighted-text-content {
+  margin-top: 15px;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light gray background */
+  border-radius: 8px;
+  border-left: 4px solid #8E12D5; /* Purple accent on left */
+  line-height: 1.6; /* Better text spacing */
+  white-space: pre-wrap; /* Preserve spaces and line breaks */
+}
+
+/* Base style for each highlighted sentence */
+.sentence-highlight {
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* Red highlighting for AI-generated text */
+.sentence-highlight.ai-generated {
+}
+
+/* Green highlighting for human-written text */
+.sentence-highlight.human-written {
+  background-color: #e8f5e8; /* Light green background */
+}
+
+/* Legend that explains the colors */
+.text-legend {
+  display: flex;
+  gap: 20px; /* Space between legend items */
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Each item in the legend */
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between color box and text */
+}
+
+/* Color boxes in the legend */
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+/* Red color box for AI-generated */
+.legend-color.ai-generated {
+  background-color: #ffebee;
+  border-color: #c62828;
+}
+
+/* Green color box for human-written */
+.legend-color.human-written {
+  background-color: #e8f5e8;
+  border-color: #2e7d32;
+}
+

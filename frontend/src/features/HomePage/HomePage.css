@@ -1,0 +1,65 @@
+/* Main page container with gradient background */
+.homepage {
+  min-height: 100vh; /* At least full screen height */
+  background: linear-gradient(135deg, #0d021d 0%, #5331a3 50%, #232161 100%);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Header at the top */
+.homepage .homepage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 5rem; /* Space inside: top/bottom, left/right */
+}
+
+/* Big logo text */
+.homepage .logo {
+  font-size: 8rem;
+  font-weight: bold;
+}
+
+/* Main content area */
+.homepage .main-content {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center everything */
+  padding: 2rem 4rem 4rem; /* Space around content */
+  gap: 4rem; /* Space between sections */
+}
+
+/* Center the button */
+.homepage .cta-section {
+  text-align: center;
+}
+
+/* Team description box with glass effect */
+.homepage .team-description {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+  backdrop-filter: blur(10px); /* Glass blur effect */
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18); /* Subtle border */
+}
+
+/* Team description text styling */
+.homepage .description-content h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.homepage .description-content p {
+  font-size: 1.1rem;
+  line-height: 1.7; /* Better text spacing */
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+}
+
+.homepage .description-content p:last-child {
+  margin-bottom: 0; /* Remove bottom margin from last paragraph */
+}

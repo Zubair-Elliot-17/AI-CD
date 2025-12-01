@@ -1,0 +1,88 @@
+/* Main container for each history item */
+.history-tab {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+}
+
+/* Hover effect */
+.history-tab:hover {
+  border-color: #8E12D5;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(142, 18, 213, 0.2);
+}
+
+/* Selected state when clicked */
+.history-tab.selected {
+  border-color: #8E12D5;
+  background-color: #f0f7fb;
+  border-width: 3px;
+}
+
+/* Content layout inside the tab */
+.tab-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Title styling */
+.tab-title {
+  margin: 0;
+  color: #3D2D4C;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Preview text styling with line clamp */
+.tab-preview {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  flex-grow: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Metadata row with score and date */
+.tab-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+/* AI score badge */
+.tab-score {
+  color: #8E12D5;
+  font-weight: 600;
+  background: #f0f7fb;
+  padding: 0.3rem 0.6rem;
+  border-radius: 16px;
+}
+
+/* Date styling */
+.tab-date {
+  color: #888;
+}
+
+/* Classification badge */
+.tab-classification {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.25rem 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+}

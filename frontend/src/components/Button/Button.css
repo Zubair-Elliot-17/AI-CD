@@ -1,0 +1,105 @@
+/* Basic button setup */
+.custom-button {
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-family: inherit;
+  text-align: center;
+}
+
+/* Different sizes */
+.small {
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+.medium {
+  font-size: 16px;
+  padding: 12px 24px;
+}
+
+.large {
+  font-size: 20px;
+  padding: 16px 32px;
+}
+
+/* Button colors */
+.primary {
+  background-color: #8E12D5;
+}
+
+.secondary {
+  background-color: #6c757d;
+}
+
+.success {
+  background-color: #28a745;
+}
+
+.danger {
+  background-color: #dc3545;
+}
+
+/* Hover effects */
+.custom-button:hover:not(.disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.primary:hover:not(.disabled) {
+  background-color: #7a0fbb;
+}
+
+.secondary:hover:not(.disabled) {
+  background-color: #5a6268;
+}
+
+.success:hover:not(.disabled) {
+  background-color: #218838;
+}
+
+.danger:hover:not(.disabled) {
+  background-color: #c82333;
+}
+
+/* Click animation. Turns into outline style */
+.custom-button:active:not(.disabled),
+.custom-button.clicked:not(.disabled) {
+  background-color: white;
+  border: 2px solid;
+  transform: translateY(0);
+}
+
+.primary:active:not(.disabled),
+.primary.clicked:not(.disabled) {
+  color: #8E12D5;
+  border-color: #8E12D5;
+}
+
+.secondary:active:not(.disabled),
+.secondary.clicked:not(.disabled) {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.success:active:not(.disabled),
+.success.clicked:not(.disabled) {
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.danger:active:not(.disabled),
+.danger.clicked:not(.disabled) {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* When button is disabled */
+.custom-button.disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}

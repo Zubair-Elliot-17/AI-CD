@@ -1,0 +1,35 @@
+/* icon container */
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect for clickable icons */
+.icon-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* When icon is clicked */
+.icon-container:active {
+  transform: translateY(0);
+}
+
+/* Focus ring for keyboard users */
+.icon-container:focus {
+  outline: 2px solid #8E12D5;
+}
+
+/* Disabled state */
+.icon-container[aria-disabled="true"] {
+  pointer-events: none; /* Can't click */
+  opacity: 0.5;
+}
+
+/* Remove hover effects when disabled */
+.icon-container[aria-disabled="true"]:hover {
+  transform: none;
+  box-shadow: none;
+}

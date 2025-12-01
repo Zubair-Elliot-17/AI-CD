@@ -1,0 +1,33 @@
+/* Global CSS reset and base styles */
+* {
+  box-sizing: border-box; /* Include padding and border in element dimensions */
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+/* CSS custom properties for consistent theming */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #3D2D4C; /* Primary text color */
+  background-color: #ffffff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base body styles */
+body {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: #3D2D4C;
+  background-color: #ffffff;
+}
+
+
