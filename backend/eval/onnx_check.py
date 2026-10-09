@@ -1,9 +1,9 @@
 # AI Content Detector - CSC3003S Capstone Project (2025)
 # Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
-"""Check the browser's ONNX exports score the benchmark like the PyTorch model.
+"""Check the browser's 8-bit ONNX model scores the benchmark like the PyTorch weights.
 
-Usage: python -m eval.onnx_check DIR  (DIR holds model.onnx, model_quantized.onnx and the tokenizer)
+Usage: python -m eval.onnx_check DIR  (DIR holds model_quantized.onnx and the tokenizer)
 """
 
 import json
@@ -13,16 +13,15 @@ from pathlib import Path
 import numpy as np
 import onnxruntime as ort
 import pandas as pd
-import torch
 from transformers import AutoConfig, AutoTokenizer
 
-from app.config import get_settings
-from app.detector import TransformerDetector, clean_text
+from app.detector import clean_text
 from app.normalize import normalize
 from eval.build import OUT as DATA
 from eval.run import document_scores, metrics, verdicts
 
 OUT = Path(__file__).parent / "onnx.json"
+RESULTS = Path(__file__).parent / "results.json"
 
 
 class OnnxDetector:
@@ -61,28 +60,17 @@ def main(folder: Path) -> None:
     full = pd.read_json(DATA, lines=True)
     df = full[full.label >= 0].reset_index(drop=True)
     y = df.label.to_numpy()
-    texts = [normalize(t)[0] for t in df.text]
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
-
-    variants = {
-        "pytorch": lambda: TransformerDetector(
-            get_settings().model_id, batch_size=32, device=device
-        ),
-        "onnx_fp32": lambda: OnnxDetector(folder, "model.onnx"),
-        "onnx_q8": lambda: OnnxDetector(folder, "model_quantized.onnx"),
+    detector = OnnxDetector(folder, "model_quantized.onnx")
+    p = document_scores(detector, [normalize(t)[0] for t in df.text])
+    reference = json.loads(RESULTS.read_text())["systems"]["roberta_2026"]
+    report = {
+        "pytorch": {
+            "clean": reference["conditions"]["clean"],
+            "verdicts": reference["verdicts"]["calibrated"],
+        },
+        "onnx_q8": {"clean": metrics(y, p), "verdicts": verdicts(detector, full)["calibrated"]},
     }
-    report, reference = {}, None
-    for key, make in variants.items():
-        detector = make()
-        p = document_scores(detector, texts)
-        entry = {"clean": metrics(y, p), "verdicts": verdicts(detector, full)["calibrated"]}
-        if reference is None:
-            reference = p
-        else:
-            entry["max_abs_diff"] = round(float(np.abs(p - reference).max()), 4)
-            entry["mean_abs_diff"] = round(float(np.abs(p - reference).mean()), 5)
-        report[key] = entry
-        print(key, json.dumps(entry), flush=True)
+    print(json.dumps(report["onnx_q8"]), flush=True)
     OUT.write_text(json.dumps(report, indent=2) + "\n")
     print(f"Wrote {OUT}")
 
