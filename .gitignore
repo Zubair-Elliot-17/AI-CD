@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+.vercel/
+
+# Local config and data
+.env
+*.env
+!.env.example
+*.db
+.DS_Store
+.gstack/
+
+# Old local-only folders from the 2025 version
+*/Documentation/

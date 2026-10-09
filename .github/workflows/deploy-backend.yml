@@ -1,0 +1,23 @@
+# AI Content Detector - CSC3003S Capstone Project (2025)
+# Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
+
+# Pushes backend/ to the Hugging Face Space when it changes on main.
+# Needs an HF_TOKEN repo secret (write access) and an HF_SPACE repo variable, e.g. "user/aicd-api".
+name: Deploy backend
+
+on:
+  push:
+    branches: [main]
+    paths: [backend/**]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: vars.HF_SPACE != ''
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+      - run: uv run --with huggingface_hub python scripts/deploy_space.py "${{ vars.HF_SPACE }}"
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
