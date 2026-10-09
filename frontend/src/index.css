@@ -1,33 +1,47 @@
-/* Global CSS reset and base styles */
-* {
-  box-sizing: border-box; /* Include padding and border in element dimensions */
-  margin: 0;
-  padding: 0;
+/* AI Content Detector - CSC3003S Capstone Project (2025)
+   Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot */
+
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+  --color-brand-800: #5b21b6;
+  --color-brand-900: #4c1d95;
+  --color-ink: #1b1530;
+  --color-night: #0f0c1d;
 }
 
-html, body, #root {
-  height: 100%;
+@layer base {
+  html {
+    @apply bg-white text-ink antialiased dark:bg-night dark:text-zinc-100;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  ::selection {
+    @apply bg-brand-200 text-ink;
+  }
 }
 
-/* CSS custom properties for consistent theming */
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #3D2D4C; /* Primary text color */
-  background-color: #ffffff;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@utility card {
+  @apply rounded-2xl border border-zinc-200/80 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.03];
 }
 
-/* Base body styles */
-body {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  color: #3D2D4C;
-  background-color: #ffffff;
+@utility focus-ring {
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-night;
 }
-
-
