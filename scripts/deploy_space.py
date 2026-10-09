@@ -22,7 +22,7 @@ pinned: false
 short_description: FastAPI backend for the AI Content Detector
 ---
 
-Backend for [AI Content Detector](https://github.com/Zubair-Elliot-17/AI-Content-Detector).
+Backend for [AI Content Detector](https://github.com/Zubair-Elliot-17/AI-CD).
 Interactive API docs at `/docs`.
 """
 
@@ -37,7 +37,7 @@ def main(space_id: str) -> None:
             stage,
             dirs_exist_ok=True,
             ignore=shutil.ignore_patterns(
-                ".venv", "__pycache__", ".pytest_cache", ".ruff_cache", "tests", ".env"
+                ".venv", "__pycache__", ".pytest_cache", ".ruff_cache", "tests", "eval", ".env"
             ),
         )
         (stage / "README.md").write_text(SPACE_README)

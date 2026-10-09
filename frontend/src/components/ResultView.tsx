@@ -2,7 +2,7 @@
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
 import clsx from "clsx";
-import { Cpu, FileText, Info, Type } from "lucide-react";
+import { Cpu, FileText, Info, ShieldAlert, Type } from "lucide-react";
 import type { DetectResult } from "../lib/api";
 import { headlineScore, pct, VERDICT_COPY, VERDICT_STYLES } from "../lib/format";
 import { Gauge } from "./Gauge";
@@ -17,6 +17,25 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
+function TamperingNotice({ invisible, homoglyphs }: { invisible: number; homoglyphs: number }) {
+  const parts = [
+    invisible > 0 && `${invisible.toLocaleString()} invisible character${invisible === 1 ? "" : "s"}`,
+    homoglyphs > 0 && `${homoglyphs.toLocaleString()} look-alike letter${homoglyphs === 1 ? "" : "s"}`,
+  ].filter(Boolean);
+  return (
+    <section role="alert" className="flex gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+      <ShieldAlert className="mt-0.5 size-5 shrink-0" />
+      <div>
+        <p className="font-semibold">Possible evasion attempt</p>
+        <p className="mt-0.5">
+          This text contains {parts.join(" and ")}. These are a common trick for fooling AI detectors, so they were
+          removed before scoring.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export function ResultView({ result }: { result: DetectResult }) {
   const copy = VERDICT_COPY[result.verdict];
   const style = VERDICT_STYLES[result.verdict];
@@ -24,8 +43,13 @@ export function ResultView({ result }: { result: DetectResult }) {
   const modelName = result.model.split("/").pop();
   const mixed = result.verdict === "mixed";
 
+  const tampering = result.tampering;
+
   return (
     <div className="space-y-6">
+      {tampering && tampering.invisible_chars + tampering.homoglyphs > 0 && (
+        <TamperingNotice invisible={tampering.invisible_chars} homoglyphs={tampering.homoglyphs} />
+      )}
       <section className="card flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-start" aria-labelledby="verdict">
         {/* A mixed document's overall score is misleading, so show how much of it reads as AI. */}
         <Gauge

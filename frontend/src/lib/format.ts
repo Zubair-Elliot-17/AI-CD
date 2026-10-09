@@ -38,12 +38,15 @@ export const VERDICT_STYLES: Record<Verdict, { text: string; badge: string; stro
   },
 };
 
-/** Highlight bucket for one sentence's AI probability. */
+/**
+ * Highlight bucket for one sentence's AI probability. Matches the backend's calibrated
+ * thresholds: only "ai-strong" sentences count towards the AI-leaning share.
+ */
 export function sentenceTone(p: number | null): "ai-strong" | "ai" | "unsure" | "human" | "none" {
   if (p === null) return "none";
-  if (p >= 0.85) return "ai-strong";
-  if (p >= 0.6) return "ai";
-  if (p > 0.4) return "unsure";
+  if (p >= 0.99) return "ai-strong";
+  if (p >= 0.9) return "ai";
+  if (p > 0.5) return "unsure";
   return "human";
 }
 

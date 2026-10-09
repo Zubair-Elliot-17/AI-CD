@@ -35,9 +35,15 @@ def clean_text(text: str) -> str:
 
 
 class TransformerDetector:
-    """Hugging Face sequence classifier with an "AI" label, run on CPU."""
+    """Hugging Face sequence classifier with an "AI" label."""
 
-    def __init__(self, model_id: str, revision: str | None = None, batch_size: int = 16):
+    def __init__(
+        self,
+        model_id: str,
+        revision: str | None = None,
+        batch_size: int = 16,
+        device: str = "cpu",
+    ):
         import torch
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
@@ -46,7 +52,8 @@ class TransformerDetector:
         self.batch_size = batch_size
         self.tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_id, revision=revision)
-        self.model.eval()
+        self.model.to(device).eval()
+        self.device = device
         label2id = {k.lower(): v for k, v in self.model.config.label2id.items()}
         self.ai_index = label2id.get("ai", 1)
         # Concurrent forward passes just fight over the same CPU cores.
@@ -54,13 +61,20 @@ class TransformerDetector:
 
     def predict(self, texts: Sequence[str]) -> list[float]:
         cleaned = [clean_text(t) for t in texts]
-        probs: list[float] = []
+        # Batching similar lengths together keeps padding, and wasted compute, to a minimum.
+        order = sorted(range(len(cleaned)), key=lambda i: len(cleaned[i]))
+        probs = [0.0] * len(cleaned)
         with self._lock, self._torch.inference_mode():
-            for i in range(0, len(cleaned), self.batch_size):
-                batch = cleaned[i : i + self.batch_size]
+            for start in range(0, len(order), self.batch_size):
+                idx = order[start : start + self.batch_size]
                 enc = self.tokenizer(
-                    batch, truncation=True, max_length=512, padding=True, return_tensors="pt"
-                )
-                logits = self.model(**enc).logits
-                probs.extend(logits.softmax(dim=-1)[:, self.ai_index].tolist())
+                    [cleaned[i] for i in idx],
+                    truncation=True,
+                    max_length=512,
+                    padding=True,
+                    return_tensors="pt",
+                ).to(self.device)
+                scores = self.model(**enc).logits.softmax(dim=-1)[:, self.ai_index]
+                for i, p in zip(idx, scores.tolist(), strict=True):
+                    probs[i] = p
         return probs

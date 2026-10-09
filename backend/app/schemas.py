@@ -17,6 +17,13 @@ class SentenceResult(BaseModel):
     ai_probability: float | None = Field(description="Null when the sentence is too short to score")
 
 
+class TamperingResult(BaseModel):
+    """Characters that look like an attempt to fool the detector, removed before scoring."""
+
+    invisible_chars: int
+    homoglyphs: int
+
+
 class DetectResponse(BaseModel):
     id: str
     verdict: Literal["ai", "mixed", "human"]
@@ -30,6 +37,7 @@ class DetectResponse(BaseModel):
     source: Literal["text", "file"]
     filename: str | None = None
     model: str
+    tampering: TamperingResult
     elapsed_ms: int
 
 

@@ -1,16 +1,23 @@
 // AI Content Detector - CSC3003S Capstone Project (2025)
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
-import { ArrowRight, FileUp, Highlighter, ShieldCheck } from "lucide-react";
+import { ArrowRight, FileUp, Highlighter, ScanEye, ShieldCheck } from "lucide-react";
 import { Link } from "react-router";
 import { GitHubIcon } from "../components/GitHubIcon";
 import { REPO_URL } from "../components/Layout";
+import { benchmark } from "../lib/benchmark";
+import { pct } from "../lib/format";
 
 const FEATURES = [
   {
     icon: Highlighter,
     title: "Sentence-level highlights",
     body: "See which sentences push the score up, not just one number for the whole document.",
+  },
+  {
+    icon: ScanEye,
+    title: "Catches evasion tricks",
+    body: "Invisible characters and look-alike letters are stripped before scoring, and you're told they were there.",
   },
   {
     icon: FileUp,
@@ -31,7 +38,31 @@ const STEPS = [
   ["Explain", "Scores roll up into a verdict. If the sentences clearly split between human and AI, the result is flagged as mixed."],
 ] as const;
 
-const STACK = ["React 19", "TypeScript", "Tailwind CSS v4", "Vite", "FastAPI", "PyTorch", "Hugging Face Transformers", "Docker", "GitHub Actions", "Vitest + Pytest"];
+const STACK = ["React 19", "TypeScript", "Tailwind CSS v4", "Vite", "FastAPI", "PyTorch", "Hugging Face Transformers", "scikit-learn", "Docker", "GitHub Actions", "Vitest + Pytest"];
+
+const { systems, dataset } = benchmark;
+
+function correct(kind: "human" | "ai", run: "calibrated" | "uncalibrated" = "calibrated") {
+  const row = systems.roberta_2026.verdicts![run][kind];
+  return row[kind] / (row.ai + row.mixed + row.human);
+}
+const RESULTS = [
+  {
+    value: systems.roberta_2026.conditions.clean.auroc.toFixed(2),
+    label: `AUROC on ${dataset.total.toLocaleString()} held-out texts`,
+    note: `vs ${systems.electra_2025.conditions.clean.auroc.toFixed(2)} for the 2025 model`,
+  },
+  {
+    value: pct(correct("human")),
+    label: "of human writing judged human",
+    note: `up from ${pct(correct("human", "uncalibrated"))} before threshold calibration`,
+  },
+  {
+    value: systems.roberta_2026.conditions.homoglyph.auroc.toFixed(2),
+    label: "AUROC under a look-alike letter attack",
+    note: `the undefended model falls to ${systems.roberta_raw.conditions.homoglyph.auroc.toFixed(2)}`,
+  },
+];
 
 const TEAM = ["Meekaaeel Booley", "Mubashir Dawood", "Zubair Elliot"];
 
@@ -79,8 +110,25 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="border-b border-zinc-200/70 dark:border-white/10">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6">
+          {RESULTS.map((r) => (
+            <div key={r.label}>
+              <p className="font-display text-4xl font-bold tabular-nums text-brand-700 dark:text-brand-300">{r.value}</p>
+              <p className="mt-1 font-medium">{r.label}</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">{r.note}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mx-auto max-w-6xl px-4 pb-10 sm:px-6">
+          <Link to="/benchmarks" className="focus-ring inline-flex items-center gap-1.5 rounded text-sm font-semibold text-brand-700 hover:underline dark:text-brand-300">
+            See the full evaluation <ArrowRight className="size-4" />
+          </Link>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map(({ icon: Icon, title, body }) => (
             <div key={title} className="card p-6">
               <Icon className="size-6 text-brand-600 dark:text-brand-300" />

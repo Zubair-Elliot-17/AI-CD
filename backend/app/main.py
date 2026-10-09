@@ -15,6 +15,7 @@ from app.analysis import analyse
 from app.config import Settings, get_settings
 from app.detector import Detector, TransformerDetector
 from app.files import SUPPORTED_EXTENSIONS, FileError, extract_text
+from app.normalize import normalize
 from app.ratelimit import RateLimiter
 from app.schemas import (
     DetectRequest,
@@ -22,6 +23,7 @@ from app.schemas import (
     ErrorResponse,
     HealthResponse,
     SentenceResult,
+    TamperingResult,
 )
 
 log = logging.getLogger("aicd")
@@ -74,7 +76,7 @@ def create_app(settings: Settings | None = None, detector: Detector | None = Non
         source: Literal["text", "file"],
         filename: str | None = None,
     ) -> DetectResponse:
-        text = text.strip()
+        text, tampering = normalize(text.strip())
         words = len(text.split())
         if words < settings.min_words:
             raise HTTPException(400, f"Text must be at least {settings.min_words} words long.")
@@ -104,6 +106,9 @@ def create_app(settings: Settings | None = None, detector: Detector | None = Non
             source=source,
             filename=filename,
             model=detector.name,
+            tampering=TamperingResult(
+                invisible_chars=tampering.invisible_chars, homoglyphs=tampering.homoglyphs
+            ),
             elapsed_ms=round((time.perf_counter() - started) * 1000),
         )
 

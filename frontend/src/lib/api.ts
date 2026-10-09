@@ -23,6 +23,8 @@ export interface DetectResult {
   source: "text" | "file";
   filename: string | null;
   model: string;
+  /** Missing on history saved before this field existed. */
+  tampering?: { invisible_chars: number; homoglyphs: number };
   elapsed_ms: number;
 }
 

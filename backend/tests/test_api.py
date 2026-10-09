@@ -102,3 +102,16 @@ def test_cors_allows_configured_origin(client):
         headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "POST"},
     )
     assert res.headers["access-control-allow-origin"] == "http://localhost:5173"
+
+
+def test_tampering_is_reported_and_undone(client):
+    attacked = AI.replace("delve", "dеl​vе")  # Cyrillic е plus a zero-width space
+    body = client.post("/api/detect", json={"text": attacked}).json()
+    assert body["verdict"] == "ai"
+    assert body["tampering"] == {"invisible_chars": 1, "homoglyphs": 2}
+    assert "delve" in body["text"]
+
+
+def test_clean_text_reports_no_tampering(client):
+    body = client.post("/api/detect", json={"text": HUMAN}).json()
+    assert body["tampering"] == {"invisible_chars": 0, "homoglyphs": 0}

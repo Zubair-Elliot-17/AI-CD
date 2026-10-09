@@ -20,7 +20,7 @@ class FakeDetector:
 
     def predict(self, texts: Sequence[str]) -> list[float]:
         self.calls.append(list(texts))
-        return [0.95 if "delve" in t.lower() else 0.05 for t in texts]
+        return [0.995 if "delve" in t.lower() else 0.005 for t in texts]
 
 
 @pytest.fixture

@@ -20,6 +20,6 @@ describe("HighlightedText", () => {
     expect(marks.map((m) => m.dataset.tone)).toEqual(["human", "ai-strong"]);
 
     await userEvent.hover(marks[1]);
-    expect(screen.getByText("Sentence 2: 97% likely AI")).toBeInTheDocument();
+    expect(screen.getByText("Sentence 2: 99% likely AI")).toBeInTheDocument();
   });
 });

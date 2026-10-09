@@ -28,9 +28,11 @@ def test_split_treats_line_breaks_as_boundaries():
 
 
 @pytest.mark.parametrize(
-    ("p", "verdict"), [(0.9, "ai"), (0.7, "ai"), (0.5, "mixed"), (0.1, "human")]
+    ("p", "verdict"),
+    [(0.99, "ai"), (0.95, "ai"), (0.8, "mixed"), (0.5, "human"), (0.1, "human")],
 )
 def test_verdict_thresholds(p, verdict):
+    # Values are the calibrated defaults; see eval/calibrate.py.
     assert verdict_for(p) == verdict
 
 
@@ -46,8 +48,8 @@ def test_analyse_scores_sentences_and_overall(detector):
     scored = {s.text: s.ai_probability for s in result.sentences}
     assert scored["Short one."] is None
     # Last sentence's window contains "delve", first sentence's window doesn't.
-    assert scored["I walked the dog this morning before work."] == pytest.approx(0.05)
-    assert scored[result.sentences[-1].text] == pytest.approx(0.95)
+    assert scored["I walked the dog this morning before work."] == pytest.approx(0.005)
+    assert scored[result.sentences[-1].text] == pytest.approx(0.995)
     # One chunk containing "delve" drives the overall score.
     assert result.verdict == "ai"
 
@@ -63,9 +65,9 @@ def test_clean_text_strips_markdown():
 
 
 def test_mixed_document_gets_mixed_verdict(detector):
-    human = "I fixed the bike chain on Sunday with a borrowed tool from next door. " * 3
-    ai = "Moreover, we must delve into the importance of regular bicycle maintenance. " * 3
+    human = "I fixed the bike chain on Sunday with a borrowed tool from next door. " * 5
+    ai = "Moreover, we must delve into the importance of regular bicycle maintenance. " * 5
     result = analyse(human + "\n\n" + ai, detector)
-    assert result.ai_probability > 0.9  # one chunk, contains "delve"
-    assert 0.2 < result.ai_sentence_share < 0.8
+    assert result.ai_probability > 0.99  # one chunk, contains "delve"
+    assert 0.35 < result.ai_sentence_share < 0.65
     assert result.verdict == "mixed"

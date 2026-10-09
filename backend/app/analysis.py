@@ -19,10 +19,24 @@ _WORD = re.compile(r"\S+")
 
 MIN_SCORABLE_WORDS = 4
 CHUNK_WORDS = 300
-AI_THRESHOLD = 0.7
-HUMAN_THRESHOLD = 0.3
-MIXED_SHARE = 0.2
-MIN_SENTENCES_FOR_MIX = 4
+
+
+@dataclass(frozen=True)
+class Thresholds:
+    """Verdict cut-offs, tuned on a separate calibration set by eval/calibrate.py.
+
+    The model's scores bunch up near 0 and 1, so the cut-offs that best separate human,
+    AI and mixed writing sit high.
+    """
+
+    ai: float = 0.95  # document score at or above this is "ai"
+    human: float = 0.5  # at or below this is "human"
+    sentence: float = 0.99  # a sentence at or above this counts as AI-leaning
+    mixed_share: float = 0.35  # AI-leaning share strictly inside (x, 1 - x) is "mixed"
+    min_sentences: int = 8  # fewer scored sentences than this can't be "mixed"
+
+
+THRESHOLDS = Thresholds()
 
 
 @dataclass
@@ -85,7 +99,7 @@ def _word_count(text: str) -> int:
     return len(_WORD.findall(text))
 
 
-def _chunks(spans: list[Span]) -> list[str]:
+def passages(spans: list[Span]) -> list[str]:
     """Group consecutive sentences into ~300-word passages for the document score."""
     chunks: list[str] = []
     current: list[str] = []
@@ -102,52 +116,62 @@ def _chunks(spans: list[Span]) -> list[str]:
     return chunks
 
 
-def ai_share(sentences: list[SentenceScore]) -> float:
+def document_score(chunks: list[str], probs: list[float]) -> float:
+    """Word-weighted mean of the passage scores."""
+    weights = [_word_count(c) for c in chunks]
+    return sum(p * w for p, w in zip(probs, weights, strict=True)) / max(sum(weights), 1)
+
+
+def ai_share(sentences: list[SentenceScore], cutoff: float = THRESHOLDS.sentence) -> float:
     """Fraction of scored words that sit in sentences leaning AI."""
     scored = [(s, _word_count(s.text)) for s in sentences if s.ai_probability is not None]
     total = sum(n for _, n in scored)
     if not total:
         return 0.0
-    return sum(n for s, n in scored if s.ai_probability >= 0.5) / total
+    return sum(n for s, n in scored if s.ai_probability >= cutoff) / total
 
 
-def verdict_for(probability: float, share: float | None = None, scored: int = 0) -> str:
+def verdict_for(
+    probability: float,
+    share: float | None = None,
+    scored: int = 0,
+    t: Thresholds = THRESHOLDS,
+) -> str:
     # A document-level score can't see a human essay with an AI paragraph pasted in,
     # so a clear split at sentence level overrides it.
     if (
         share is not None
-        and scored >= MIN_SENTENCES_FOR_MIX
-        and MIXED_SHARE < share < 1 - MIXED_SHARE
+        and scored >= t.min_sentences
+        and t.mixed_share < share < 1 - t.mixed_share
     ):
         return "mixed"
-    if probability >= AI_THRESHOLD:
+    if probability >= t.ai:
         return "ai"
-    if probability <= HUMAN_THRESHOLD:
+    if probability <= t.human:
         return "human"
     return "mixed"
 
 
-def analyse(text: str, detector: Detector) -> Analysis:
+def analyse(text: str, detector: Detector, t: Thresholds = THRESHOLDS) -> Analysis:
     spans = split_sentences(text)
     scorable = [i for i, s in enumerate(spans) if _word_count(s.text) >= MIN_SCORABLE_WORDS]
 
     # Each sentence is scored with its neighbours so single short lines aren't judged blind.
     windows = [" ".join(s.text for s in spans[max(0, i - 1) : i + 2]) for i in scorable]
-    chunks = _chunks(spans)
+    chunks = passages(spans)
     probs = detector.predict(chunks + windows)
     chunk_probs, window_probs = probs[: len(chunks)], probs[len(chunks) :]
 
-    weights = [_word_count(c) for c in chunks]
-    overall = sum(p * w for p, w in zip(chunk_probs, weights, strict=True)) / max(sum(weights), 1)
+    overall = document_score(chunks, chunk_probs)
 
     by_index = dict(zip(scorable, window_probs, strict=True))
     sentences = [
         SentenceScore(s.start, s.end, s.text, by_index.get(i)) for i, s in enumerate(spans)
     ]
-    share = ai_share(sentences)
+    share = ai_share(sentences, t.sentence)
     return Analysis(
         ai_probability=overall,
-        verdict=verdict_for(overall, share, len(scorable)),
+        verdict=verdict_for(overall, share, len(scorable), t),
         confidence=abs(overall - 0.5) * 2,
         word_count=_word_count(text),
         sentences=sentences,

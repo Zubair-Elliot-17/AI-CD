@@ -3,6 +3,7 @@
 
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { Layout } from "./components/Layout";
+import Benchmarks from "./pages/Benchmarks";
 import Detect from "./pages/Detect";
 import History, { HistoryDetail } from "./pages/History";
 import Home from "./pages/Home";
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/detect", element: <Detect /> },
+      { path: "/benchmarks", element: <Benchmarks /> },
       { path: "/history", element: <History /> },
       { path: "/history/:id", element: <HistoryDetail /> },
       // Routes from the 2025 version, kept so old links still work.

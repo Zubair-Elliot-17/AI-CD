@@ -15,7 +15,7 @@ export const result: DetectResult = {
   char_count: text.length,
   sentences: [
     { start: 0, end: 33, text: text.slice(0, 33), ai_probability: 0.04 },
-    { start: 35, end: text.length, text: text.slice(35), ai_probability: 0.97 },
+    { start: 35, end: text.length, text: text.slice(35), ai_probability: 0.991 },
   ],
   text,
   source: "text",
