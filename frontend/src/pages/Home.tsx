@@ -22,23 +22,23 @@ const FEATURES = [
   {
     icon: FileUp,
     title: "PDF, Word and text files",
-    body: "Drop in a document and the text is extracted in memory. Nothing is written to disk.",
+    body: "Drop in a document and the text is pulled out right in your browser. Nothing is uploaded.",
   },
   {
     icon: ShieldCheck,
-    title: "Private by design",
-    body: "The API is stateless. Your history stays in your own browser and the server keeps nothing.",
+    title: "Runs on your device",
+    body: "The model runs in your browser with WebAssembly. Your text never leaves your device, and there's no server to wait for.",
   },
 ];
 
 const STEPS = [
   ["Split", "Text is split into sentences with character offsets, so highlights map back onto the original exactly."],
   ["Score", "Each sentence is scored together with its neighbours, and ~300-word passages are scored for the whole-document verdict, all in one batched pass."],
-  ["Classify", "A RoBERTa-base transformer fine-tuned to tell human writing from LLM output returns P(AI) for every input."],
+  ["Classify", "A RoBERTa-base transformer, quantized to 8 bits and run in a Web Worker, returns P(AI) for every input."],
   ["Explain", "Scores roll up into a verdict. If the sentences clearly split between human and AI, the result is flagged as mixed."],
 ] as const;
 
-const STACK = ["React 19", "TypeScript", "Tailwind CSS v4", "Vite", "FastAPI", "PyTorch", "Hugging Face Transformers", "scikit-learn", "Docker", "GitHub Actions", "Vitest + Pytest"];
+const STACK = ["React 19", "TypeScript", "Tailwind CSS v4", "Vite", "Transformers.js", "ONNX Runtime Web", "FastAPI", "PyTorch", "scikit-learn", "Docker", "GitHub Actions", "Vitest + Pytest"];
 
 const { systems, dataset } = benchmark;
 
@@ -168,7 +168,7 @@ export default function Home() {
         <div>
           <h2 className="font-display text-3xl font-bold tracking-tight">The team</h2>
           <p className="mt-4 text-zinc-600 dark:text-zinc-400">
-            Built as our final-year CSC3003S capstone at the University of Cape Town. The original version (2025) ran a fine-tuned ELECTRA model on Flask and AWS. In 2026 it was rebuilt with FastAPI, TypeScript and a newer detector.
+            Built as our final-year CSC3003S capstone at the University of Cape Town. The original version (2025) ran a fine-tuned ELECTRA model on Flask and AWS. In 2026 it was rebuilt with TypeScript and a newer detector that runs entirely in the browser, with a FastAPI backend kept for the API and the benchmark.
           </p>
           <ul className="mt-4 space-y-1 font-medium">
             {TEAM.map((name) => (

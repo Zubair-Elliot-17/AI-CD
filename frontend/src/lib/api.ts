@@ -1,6 +1,8 @@
 // AI Content Detector - CSC3003S Capstone Project (2025)
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
+import { detectFile, detectText, EngineError } from "./engine";
+
 export type Verdict = "ai" | "mixed" | "human";
 
 export interface SentenceResult {
@@ -37,7 +39,8 @@ export interface Health {
   supported_extensions: string[];
 }
 
-export const API_URL = (import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000").replace(/\/$/, "");
+/** Set VITE_API_URL to use the FastAPI backend; otherwise the model runs in the browser. */
+export const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || null;
 
 export class ApiError extends Error {
   readonly status: number;
@@ -62,18 +65,30 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+async function local<T>(run: () => Promise<T>): Promise<T> {
+  try {
+    return await run();
+  } catch (err) {
+    if (err instanceof EngineError) throw new ApiError(err.message, 400);
+    throw new ApiError("The model couldn't run in this browser. Try reloading the page.", 500);
+  }
+}
+
 export const api = {
   health: (signal?: AbortSignal) => request<Health>("/api/health", { signal }),
 
   detectText: (text: string, signal?: AbortSignal) =>
-    request<DetectResult>("/api/detect", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-      signal,
-    }),
+    API_URL
+      ? request<DetectResult>("/api/detect", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+          signal,
+        })
+      : local(() => detectText(text)),
 
   detectFile: (file: File, signal?: AbortSignal) => {
+    if (!API_URL) return local(() => detectFile(file));
     const body = new FormData();
     body.append("file", file);
     return request<DetectResult>("/api/detect/file", { method: "POST", body, signal });
