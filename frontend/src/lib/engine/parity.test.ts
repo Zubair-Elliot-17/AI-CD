@@ -2,7 +2,8 @@
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
 import { describe, expect, it } from "vitest";
-import { analyse, cleanText, splitSentences, verdictFor } from "./analysis";
+import { sentenceTone } from "../format";
+import { analyse, BROWSER_THRESHOLDS, cleanText, splitSentences, verdictFor } from "./analysis";
 import { normalize } from "./normalize";
 import cases from "./parity.json";
 
@@ -40,5 +41,11 @@ describe("browser engine matches the Python backend", () => {
     expect(verdictFor(0.7, 0, 10)).toBe("mixed");
     expect(verdictFor(0.2, 0.5, 10)).toBe("mixed");
     expect(verdictFor(0.2, 0.5, 3)).toBe("human");
+  });
+
+  it("uses the 8-bit model's own cut-offs in the browser", () => {
+    expect(verdictFor(0.97, 0, 10, BROWSER_THRESHOLDS)).toBe("mixed");
+    expect(verdictFor(0.6, 0, 10, BROWSER_THRESHOLDS)).toBe("human");
+    expect(sentenceTone(0.96)).toBe("ai-strong");
   });
 });

@@ -1,7 +1,7 @@
 // AI Content Detector - CSC3003S Capstone Project (2025)
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
-import type { Verdict } from "./api";
+import { ACTIVE_THRESHOLDS, type Verdict } from "./api";
 
 export const pct = (p: number) => `${Math.round(p * 100)}%`;
 
@@ -39,12 +39,15 @@ export const VERDICT_STYLES: Record<Verdict, { text: string; badge: string; stro
 };
 
 /**
- * Highlight bucket for one sentence's AI probability. Matches the backend's calibrated
- * thresholds: only "ai-strong" sentences count towards the AI-leaning share.
+ * Highlight bucket for one sentence's AI probability. Only "ai-strong" sentences count
+ * towards the AI-leaning share, so its cut-off follows the active thresholds.
  */
-export function sentenceTone(p: number | null): "ai-strong" | "ai" | "unsure" | "human" | "none" {
+export function sentenceTone(
+  p: number | null,
+  strong = ACTIVE_THRESHOLDS.sentence,
+): "ai-strong" | "ai" | "unsure" | "human" | "none" {
   if (p === null) return "none";
-  if (p >= 0.99) return "ai-strong";
+  if (p >= strong) return "ai-strong";
   if (p >= 0.9) return "ai";
   if (p > 0.5) return "unsure";
   return "human";

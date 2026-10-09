@@ -17,8 +17,11 @@ const WORD = /\S+/g;
 const MIN_SCORABLE_WORDS = 4;
 const CHUNK_WORDS = 300;
 
-/** Verdict cut-offs, tuned by backend/eval/calibrate.py. */
+/** Verdict cut-offs for the full-precision model, tuned by backend/eval/calibrate.py. */
 export const THRESHOLDS = { ai: 0.95, human: 0.5, sentence: 0.99, mixed_share: 0.35, min_sentences: 8 };
+
+/** Cut-offs for the 8-bit browser model (eval/calibrate.py --onnx, see calibration_q8.json). */
+export const BROWSER_THRESHOLDS = { ai: 0.99, human: 0.7, sentence: 0.95, mixed_share: 0.3, min_sentences: 8 };
 
 export type Predict = (texts: string[]) => Promise<number[]>;
 

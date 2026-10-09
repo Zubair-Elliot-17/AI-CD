@@ -2,6 +2,7 @@
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
 import { detectFile, detectText, EngineError } from "./engine";
+import { BROWSER_THRESHOLDS, THRESHOLDS } from "./engine/analysis";
 
 export type Verdict = "ai" | "mixed" | "human";
 
@@ -41,6 +42,9 @@ export interface Health {
 
 /** Set VITE_API_URL to use the FastAPI backend; otherwise the model runs in the browser. */
 export const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || null;
+
+/** The verdict cut-offs behind the results this build shows. */
+export const ACTIVE_THRESHOLDS = API_URL ? THRESHOLDS : BROWSER_THRESHOLDS;
 
 export class ApiError extends Error {
   readonly status: number;
