@@ -1,0 +1,64 @@
+{
+  "pytorch": {
+    "clean": {
+      "auroc": 0.9232,
+      "auroc_ci": [
+        0.9109,
+        0.9353
+      ],
+      "accuracy": 0.8416,
+      "f1": 0.8677,
+      "tpr_at_1pct_fpr": 0.3812,
+      "tpr": 0.8843,
+      "fpr": 0.0968
+    },
+    "verdicts": {
+      "human": {
+        "ai": 74,
+        "mixed": 207,
+        "human": 793
+      },
+      "ai": {
+        "ai": 955,
+        "mixed": 331,
+        "human": 114
+      },
+      "mixed": {
+        "ai": 15,
+        "mixed": 112,
+        "human": 23
+      }
+    }
+  },
+  "onnx_q8": {
+    "clean": {
+      "auroc": 0.9218,
+      "auroc_ci": [
+        0.9092,
+        0.934
+      ],
+      "accuracy": 0.8254,
+      "f1": 0.8565,
+      "tpr_at_1pct_fpr": 0.3927,
+      "tpr": 0.8879,
+      "fpr": 0.1173
+    },
+    "verdicts": {
+      "human": {
+        "ai": 95,
+        "mixed": 226,
+        "human": 753
+      },
+      "ai": {
+        "ai": 975,
+        "mixed": 316,
+        "human": 109
+      },
+      "mixed": {
+        "ai": 10,
+        "mixed": 120,
+        "human": 20
+      }
+    }
+  }
+}

@@ -53,6 +53,18 @@ Both versions were scored on the same **2,474 texts** that neither was trained o
 | AUROC, look-alike letter attack | 0.835 | 0.596 | **0.923** |
 | Human texts flagged as AI | 14% | 10% | **10%** |
 
+**The browser model.** The live site runs an 8-bit quantized copy of the model so it can download in 125 MB instead of 500 MB. [`eval/onnx_check.py`](backend/eval/onnx_check.py) re-scores the same benchmark with it ([`eval/onnx.json`](backend/eval/onnx.json)):
+
+| | PyTorch (full precision) | Browser (8-bit ONNX) |
+|---|---|---|
+| AUROC, clean text | 0.923 | 0.922 |
+| AI caught when 1% of human text is flagged | 38% | 39% |
+| Human texts judged human | 74% | 70% |
+| Human texts called AI | 6.9% | 8.8% |
+| AI texts called AI | 68% | 70% |
+
+Ranking quality is unchanged, but quantization nudges scores upward a little, so the browser model calls slightly more human writing AI. The verdict thresholds were calibrated on the full-precision model.
+
 Three things came out of building the benchmark:
 
 1. **The new model was easy to fool.** Hiding zero-width spaces in AI text, or swapping half its letters for identical-looking Cyrillic ones, dropped it to near chance (AUROC 0.60). The API now strips invisible characters and maps look-alikes back to Latin before scoring, which restores the clean-text score of 0.923, and it tells the user when it finds them.
