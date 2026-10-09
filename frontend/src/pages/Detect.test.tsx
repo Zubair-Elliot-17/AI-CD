@@ -27,35 +27,97 @@ function renderPage() {
   return render(<RouterProvider router={router} />);
 }
 
-describe("Detect page", () => {
+const engine = vi.hoisted(() => ({
+  detectText: vi.fn(),
+  detectFile: vi.fn(),
+  status: { state: "ready" },
+}));
+
+vi.mock("../lib/engine", async (original) => {
+  const actual = await original<typeof import("../lib/engine")>();
+  return {
+    ...actual,
+    detectText: engine.detectText,
+    detectFile: engine.detectFile,
+    engine: { status: engine.status, load: vi.fn(), subscribe: () => () => {} },
+  };
+});
+
+describe("Detect page (in-browser model)", () => {
+  beforeEach(() => {
+    history._reset();
+    Element.prototype.scrollIntoView = vi.fn();
+  });
+  afterEach(() => vi.clearAllMocks());
+
+  it("analyses pasted text locally, shows the verdict and saves to history", async () => {
+    engine.detectText.mockResolvedValue(result);
+    renderPage();
+
+    const analyse = screen.getByRole("button", { name: /analyse/i });
+    expect(analyse).toBeDisabled();
+    expect(screen.getByText(/never leaves this device/)).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Mixed sample" }));
+    await userEvent.click(analyse);
+
+    expect(await screen.findByRole("heading", { name: "Mixed signals" })).toBeInTheDocument();
+    expect(history.list()[0].id).toBe(result.id);
+    expect(engine.detectText.mock.calls[0][0]).toContain("bike");
+  });
+
+  it("shows the engine's validation message", async () => {
+    const { EngineError } = await import("../lib/engine");
+    engine.detectText.mockRejectedValue(new EngineError("Text must be at least 10 words long."));
+    renderPage();
+    await userEvent.click(screen.getByRole("button", { name: "AI sample" }));
+    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("at least 10 words");
+  });
+
+  it("reads a dropped-in file locally", async () => {
+    engine.detectFile.mockResolvedValue({ ...result, source: "file", filename: "essay.pdf" });
+    const { container } = renderPage();
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
+    await userEvent.upload(input, new File(["%PDF"], "essay.pdf", { type: "application/pdf" }));
+
+    expect(screen.getByText("essay.pdf")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
+    await waitFor(() => expect(engine.detectFile).toHaveBeenCalled());
+  });
+});
+
+describe("Detect page (FastAPI backend)", () => {
   const fetchMock = vi.fn();
 
   beforeEach(() => {
+    vi.resetModules();
+    vi.stubEnv("VITE_API_URL", "http://api.test");
     history._reset();
     Element.prototype.scrollIntoView = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
   });
   afterEach(() => {
+    vi.unstubAllEnvs();
     vi.unstubAllGlobals();
     fetchMock.mockReset();
   });
 
-  it("analyses pasted text, shows the verdict and saves to history", async () => {
+  async function renderServerPage() {
+    const { default: Page } = await import("./Detect");
+    const router = createMemoryRouter([{ path: "/", element: <Page /> }]);
+    return render(<RouterProvider router={router} />);
+  }
+
+  it("posts the text to the API", async () => {
     fetchMock.mockImplementation((url: string) => (url.endsWith("/health") ? json(health) : json(result)));
-    renderPage();
-
-    const analyse = screen.getByRole("button", { name: /analyse/i });
-    expect(analyse).toBeDisabled();
-
+    await renderServerPage();
+    expect(await screen.findByText("Model ready")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Mixed sample" }));
-    expect(analyse).toBeEnabled();
-    await userEvent.click(analyse);
+    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
 
     expect(await screen.findByRole("heading", { name: "Mixed signals" })).toBeInTheDocument();
-    expect(screen.getByText("Model ready")).toBeInTheDocument();
-    expect(history.list()[0].id).toBe(result.id);
-
-    const [, init] = fetchMock.mock.calls.find(([url]) => url.endsWith("/api/detect"))!;
+    const [, init] = fetchMock.mock.calls.find(([url]) => url === "http://api.test/api/detect")!;
     expect(JSON.parse(init.body).text).toContain("bike");
   });
 
@@ -63,20 +125,9 @@ describe("Detect page", () => {
     fetchMock.mockImplementation((url: string) =>
       url.endsWith("/health") ? json(health) : json({ detail: "Too many requests. Try again in a minute." }, 429),
     );
-    renderPage();
+    await renderServerPage();
     await userEvent.click(screen.getByRole("button", { name: "AI sample" }));
     await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Too many requests");
-  });
-
-  it("uploads a dropped-in file instead of text", async () => {
-    fetchMock.mockImplementation((url: string) => (url.endsWith("/health") ? json(health) : json({ ...result, source: "file", filename: "essay.pdf" })));
-    const { container } = renderPage();
-    const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
-    await userEvent.upload(input, new File(["%PDF"], "essay.pdf", { type: "application/pdf" }));
-
-    expect(screen.getByText("essay.pdf")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
-    await waitFor(() => expect(fetchMock.mock.calls.some(([url]) => url.endsWith("/api/detect/file"))).toBe(true));
   });
 });

@@ -1,0 +1,429 @@
+[
+  {
+    "input": "Dr. Smith went to Washington. He arrived at 5 p.m. and left! Did he stay? No.",
+    "normalized": "Dr. Smith went to Washington. He arrived at 5 p.m. and left! Did he stay? No.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "Dr. Smith went to Washington.",
+      "He arrived at 5 p.m. and left!",
+      "Did he stay?",
+      "No."
+    ],
+    "cleaned": "Dr. Smith went to Washington. He arrived at 5 p.m. and left! Did he stay? No.",
+    "analysis": {
+      "ai_probability": 0.6956956956956957,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 16,
+      "scores": [
+        0.062062062062062065,
+        0.5085085085085085,
+        null,
+        null
+      ]
+    }
+  },
+  {
+    "input": "First line\nSecond line without a stop\n\nA new paragraph (with brackets.) Then more.",
+    "normalized": "First line\nSecond line without a stop\n\nA new paragraph (with brackets.) Then more.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "First line",
+      "Second line without a stop",
+      "A new paragraph (with brackets.)",
+      "Then more."
+    ],
+    "cleaned": "First line Second line without a stop A new paragraph (with brackets.) Then more.",
+    "analysis": {
+      "ai_probability": 0.5705705705705706,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 14,
+      "scores": [
+        null,
+        0.18618618618618618,
+        0.4824824824824825,
+        null
+      ]
+    }
+  },
+  {
+    "input": "She said \"hello.\" Then she left. The U.S. economy grew by 3% in Q2, e.g. in tech.",
+    "normalized": "She said \"hello.\" Then she left. The U.S. economy grew by 3% in Q2, e.g. in tech.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "She said \"hello.\"",
+      "Then she left.",
+      "The U.S. economy grew by 3% in Q2, e.g. in tech."
+    ],
+    "cleaned": "She said \"hello.\" Then she left. The U.S. economy grew by 3% in Q2, e.g. in tech.",
+    "analysis": {
+      "ai_probability": 0.997997997997998,
+      "verdict": "ai",
+      "ai_sentence_share": 0.0,
+      "word_count": 17,
+      "scores": [
+        null,
+        null,
+        0.8308308308308309
+      ]
+    }
+  },
+  {
+    "input": "Ρlеаsе rеаd thіs​ саrеfullу, it is а tеst.",
+    "normalized": "Please read this carefully, it is a test.",
+    "tampering": {
+      "invisible_chars": 1,
+      "homoglyphs": 13
+    },
+    "sentences": [
+      "Please read this carefully, it is a test."
+    ],
+    "cleaned": "Ρlеаsе rеаd thіs​ саrеfullу, it is а tеst.",
+    "analysis": {
+      "ai_probability": 0.6816816816816816,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 8,
+      "scores": [
+        0.6816816816816816
+      ]
+    }
+  },
+  {
+    "input": "Это настоящий русский текст. Он не должен меняться.",
+    "normalized": "Это настоящий русский текст. Он не должен меняться.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "Это настоящий русский текст.",
+      "Он не должен меняться."
+    ],
+    "cleaned": "Это настоящий русский текст. Он не должен меняться.",
+    "analysis": {
+      "ai_probability": 0.5295295295295295,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 8,
+      "scores": [
+        0.5295295295295295,
+        0.5295295295295295
+      ]
+    }
+  },
+  {
+    "input": "Ｆｕｌｌ－ｗｉｄｔｈ letters and ligatures: ﬁne ﬂow.",
+    "normalized": "Full-width letters and ligatures: fine flow.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "Full-width letters and ligatures: fine flow."
+    ],
+    "cleaned": "Ｆｕｌｌ－ｗｉｄｔｈ letters and ligatures: ﬁne ﬂow.",
+    "analysis": {
+      "ai_probability": 0.8488488488488488,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 6,
+      "scores": [
+        0.8488488488488488
+      ]
+    }
+  },
+  {
+    "input": "Mixed: the word Pаris has a Cyrillic а, and ­soft­ hyphens.",
+    "normalized": "Mixed: the word Paris has a Cyrillic a, and soft hyphens.",
+    "tampering": {
+      "invisible_chars": 2,
+      "homoglyphs": 2
+    },
+    "sentences": [
+      "Mixed: the word Paris has a Cyrillic a, and soft hyphens."
+    ],
+    "cleaned": "Mixed: the word Pаris has a Cyrillic а, and ­soft­ hyphens.",
+    "analysis": {
+      "ai_probability": 0.6226226226226226,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 11,
+      "scores": [
+        0.6226226226226226
+      ]
+    }
+  },
+  {
+    "input": "# Heading\n\n- item one with **bold** and _italic_\n1. numbered [link](http://x.y) `code`\n<b>tag</b> &amp; &#39;quote&#39; ,comma",
+    "normalized": "# Heading\n\n- item one with **bold** and _italic_\n1. numbered [link](http://x.y) `code`\n<b>tag</b> &amp; &#39;quote&#39; ,comma",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "# Heading",
+      "- item one with **bold** and _italic_",
+      "1.",
+      "numbered [link](http://x.y) `code`",
+      "<b>tag</b> &amp; &#39;quote&#39; ,comma"
+    ],
+    "cleaned": "Heading item one with bold and italic numbered link tag & 'quote',comma",
+    "analysis": {
+      "ai_probability": 0.5845845845845846,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 17,
+      "scores": [
+        null,
+        0.6606606606606606,
+        null,
+        null,
+        0.5725725725725725
+      ]
+    }
+  },
+  {
+    "input": "```\nblock\n``` After the code block, text continues. Short. Another sentence here, quite long.",
+    "normalized": "```\nblock\n``` After the code block, text continues. Short. Another sentence here, quite long.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "```",
+      "block",
+      "``` After the code block, text continues.",
+      "Short.",
+      "Another sentence here, quite long."
+    ],
+    "cleaned": "After the code block, text continues. Short. Another sentence here, quite long.",
+    "analysis": {
+      "ai_probability": 0.9099099099099099,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 15,
+      "scores": [
+        null,
+        null,
+        0.8818818818818819,
+        null,
+        0.32232232232232233
+      ]
+    }
+  },
+  {
+    "input": "Emoji test 🎉 works fine. Another sentence follows it. A. B. c. Final bit.",
+    "normalized": "Emoji test 🎉 works fine. Another sentence follows it. A. B. c. Final bit.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "Emoji test 🎉 works fine.",
+      "Another sentence follows it.",
+      "A. B. c. Final bit."
+    ],
+    "cleaned": "Emoji test 🎉 works fine. Another sentence follows it. A. B. c. Final bit.",
+    "analysis": {
+      "ai_probability": 0.993993993993994,
+      "verdict": "ai",
+      "ai_sentence_share": 0.2857142857142857,
+      "word_count": 14,
+      "scores": [
+        0.5305305305305306,
+        0.993993993993994,
+        0.5345345345345346
+      ]
+    }
+  },
+  {
+    "input": "Sentence number 0 talks about topic 0 in a fairly ordinary way. Sentence number 1 talks about topic 1 in a fairly ordinary way. Sentence number 2 talks about topic 2 in a fairly ordinary way. Sentence number 3 talks about topic 3 in a fairly ordinary way. Sentence number 4 talks about topic 4 in a fairly ordinary way. Sentence number 5 talks about topic 5 in a fairly ordinary way. Sentence number 6 talks about topic 6 in a fairly ordinary way. Sentence number 7 talks about topic 0 in a fairly ordinary way. Sentence number 8 talks about topic 1 in a fairly ordinary way. Sentence number 9 talks about topic 2 in a fairly ordinary way. Sentence number 10 talks about topic 3 in a fairly ordinary way. Sentence number 11 talks about topic 4 in a fairly ordinary way. Sentence number 12 talks about topic 5 in a fairly ordinary way. Sentence number 13 talks about topic 6 in a fairly ordinary way. Sentence number 14 talks about topic 0 in a fairly ordinary way. Sentence number 15 talks about topic 1 in a fairly ordinary way. Sentence number 16 talks about topic 2 in a fairly ordinary way. Sentence number 17 talks about topic 3 in a fairly ordinary way. Sentence number 18 talks about topic 4 in a fairly ordinary way. Sentence number 19 talks about topic 5 in a fairly ordinary way. Sentence number 20 talks about topic 6 in a fairly ordinary way. Sentence number 21 talks about topic 0 in a fairly ordinary way. Sentence number 22 talks about topic 1 in a fairly ordinary way. Sentence number 23 talks about topic 2 in a fairly ordinary way. Sentence number 24 talks about topic 3 in a fairly ordinary way. Sentence number 25 talks about topic 4 in a fairly ordinary way. Sentence number 26 talks about topic 5 in a fairly ordinary way. Sentence number 27 talks about topic 6 in a fairly ordinary way. Sentence number 28 talks about topic 0 in a fairly ordinary way. Sentence number 29 talks about topic 1 in a fairly ordinary way. Sentence number 30 talks about topic 2 in a fairly ordinary way. Sentence number 31 talks about topic 3 in a fairly ordinary way. Sentence number 32 talks about topic 4 in a fairly ordinary way. Sentence number 33 talks about topic 5 in a fairly ordinary way. Sentence number 34 talks about topic 6 in a fairly ordinary way. Sentence number 35 talks about topic 0 in a fairly ordinary way. Sentence number 36 talks about topic 1 in a fairly ordinary way. Sentence number 37 talks about topic 2 in a fairly ordinary way. Sentence number 38 talks about topic 3 in a fairly ordinary way. Sentence number 39 talks about topic 4 in a fairly ordinary way. Sentence number 40 talks about topic 5 in a fairly ordinary way. Sentence number 41 talks about topic 6 in a fairly ordinary way. Sentence number 42 talks about topic 0 in a fairly ordinary way. Sentence number 43 talks about topic 1 in a fairly ordinary way. Sentence number 44 talks about topic 2 in a fairly ordinary way. Sentence number 45 talks about topic 3 in a fairly ordinary way. Sentence number 46 talks about topic 4 in a fairly ordinary way. Sentence number 47 talks about topic 5 in a fairly ordinary way. Sentence number 48 talks about topic 6 in a fairly ordinary way. Sentence number 49 talks about topic 0 in a fairly ordinary way. Sentence number 50 talks about topic 1 in a fairly ordinary way. Sentence number 51 talks about topic 2 in a fairly ordinary way. Sentence number 52 talks about topic 3 in a fairly ordinary way. Sentence number 53 talks about topic 4 in a fairly ordinary way. Sentence number 54 talks about topic 5 in a fairly ordinary way. Sentence number 55 talks about topic 6 in a fairly ordinary way. Sentence number 56 talks about topic 0 in a fairly ordinary way. Sentence number 57 talks about topic 1 in a fairly ordinary way. Sentence number 58 talks about topic 2 in a fairly ordinary way. Sentence number 59 talks about topic 3 in a fairly ordinary way. Sentence number 60 talks about topic 4 in a fairly ordinary way. Sentence number 61 talks about topic 5 in a fairly ordinary way. Sentence number 62 talks about topic 6 in a fairly ordinary way. Sentence number 63 talks about topic 0 in a fairly ordinary way. Sentence number 64 talks about topic 1 in a fairly ordinary way. Sentence number 65 talks about topic 2 in a fairly ordinary way. Sentence number 66 talks about topic 3 in a fairly ordinary way. Sentence number 67 talks about topic 4 in a fairly ordinary way. Sentence number 68 talks about topic 5 in a fairly ordinary way. Sentence number 69 talks about topic 6 in a fairly ordinary way. Sentence number 70 talks about topic 0 in a fairly ordinary way. Sentence number 71 talks about topic 1 in a fairly ordinary way. Sentence number 72 talks about topic 2 in a fairly ordinary way. Sentence number 73 talks about topic 3 in a fairly ordinary way. Sentence number 74 talks about topic 4 in a fairly ordinary way. Sentence number 75 talks about topic 5 in a fairly ordinary way. Sentence number 76 talks about topic 6 in a fairly ordinary way. Sentence number 77 talks about topic 0 in a fairly ordinary way. Sentence number 78 talks about topic 1 in a fairly ordinary way. Sentence number 79 talks about topic 2 in a fairly ordinary way.",
+    "normalized": "Sentence number 0 talks about topic 0 in a fairly ordinary way. Sentence number 1 talks about topic 1 in a fairly ordinary way. Sentence number 2 talks about topic 2 in a fairly ordinary way. Sentence number 3 talks about topic 3 in a fairly ordinary way. Sentence number 4 talks about topic 4 in a fairly ordinary way. Sentence number 5 talks about topic 5 in a fairly ordinary way. Sentence number 6 talks about topic 6 in a fairly ordinary way. Sentence number 7 talks about topic 0 in a fairly ordinary way. Sentence number 8 talks about topic 1 in a fairly ordinary way. Sentence number 9 talks about topic 2 in a fairly ordinary way. Sentence number 10 talks about topic 3 in a fairly ordinary way. Sentence number 11 talks about topic 4 in a fairly ordinary way. Sentence number 12 talks about topic 5 in a fairly ordinary way. Sentence number 13 talks about topic 6 in a fairly ordinary way. Sentence number 14 talks about topic 0 in a fairly ordinary way. Sentence number 15 talks about topic 1 in a fairly ordinary way. Sentence number 16 talks about topic 2 in a fairly ordinary way. Sentence number 17 talks about topic 3 in a fairly ordinary way. Sentence number 18 talks about topic 4 in a fairly ordinary way. Sentence number 19 talks about topic 5 in a fairly ordinary way. Sentence number 20 talks about topic 6 in a fairly ordinary way. Sentence number 21 talks about topic 0 in a fairly ordinary way. Sentence number 22 talks about topic 1 in a fairly ordinary way. Sentence number 23 talks about topic 2 in a fairly ordinary way. Sentence number 24 talks about topic 3 in a fairly ordinary way. Sentence number 25 talks about topic 4 in a fairly ordinary way. Sentence number 26 talks about topic 5 in a fairly ordinary way. Sentence number 27 talks about topic 6 in a fairly ordinary way. Sentence number 28 talks about topic 0 in a fairly ordinary way. Sentence number 29 talks about topic 1 in a fairly ordinary way. Sentence number 30 talks about topic 2 in a fairly ordinary way. Sentence number 31 talks about topic 3 in a fairly ordinary way. Sentence number 32 talks about topic 4 in a fairly ordinary way. Sentence number 33 talks about topic 5 in a fairly ordinary way. Sentence number 34 talks about topic 6 in a fairly ordinary way. Sentence number 35 talks about topic 0 in a fairly ordinary way. Sentence number 36 talks about topic 1 in a fairly ordinary way. Sentence number 37 talks about topic 2 in a fairly ordinary way. Sentence number 38 talks about topic 3 in a fairly ordinary way. Sentence number 39 talks about topic 4 in a fairly ordinary way. Sentence number 40 talks about topic 5 in a fairly ordinary way. Sentence number 41 talks about topic 6 in a fairly ordinary way. Sentence number 42 talks about topic 0 in a fairly ordinary way. Sentence number 43 talks about topic 1 in a fairly ordinary way. Sentence number 44 talks about topic 2 in a fairly ordinary way. Sentence number 45 talks about topic 3 in a fairly ordinary way. Sentence number 46 talks about topic 4 in a fairly ordinary way. Sentence number 47 talks about topic 5 in a fairly ordinary way. Sentence number 48 talks about topic 6 in a fairly ordinary way. Sentence number 49 talks about topic 0 in a fairly ordinary way. Sentence number 50 talks about topic 1 in a fairly ordinary way. Sentence number 51 talks about topic 2 in a fairly ordinary way. Sentence number 52 talks about topic 3 in a fairly ordinary way. Sentence number 53 talks about topic 4 in a fairly ordinary way. Sentence number 54 talks about topic 5 in a fairly ordinary way. Sentence number 55 talks about topic 6 in a fairly ordinary way. Sentence number 56 talks about topic 0 in a fairly ordinary way. Sentence number 57 talks about topic 1 in a fairly ordinary way. Sentence number 58 talks about topic 2 in a fairly ordinary way. Sentence number 59 talks about topic 3 in a fairly ordinary way. Sentence number 60 talks about topic 4 in a fairly ordinary way. Sentence number 61 talks about topic 5 in a fairly ordinary way. Sentence number 62 talks about topic 6 in a fairly ordinary way. Sentence number 63 talks about topic 0 in a fairly ordinary way. Sentence number 64 talks about topic 1 in a fairly ordinary way. Sentence number 65 talks about topic 2 in a fairly ordinary way. Sentence number 66 talks about topic 3 in a fairly ordinary way. Sentence number 67 talks about topic 4 in a fairly ordinary way. Sentence number 68 talks about topic 5 in a fairly ordinary way. Sentence number 69 talks about topic 6 in a fairly ordinary way. Sentence number 70 talks about topic 0 in a fairly ordinary way. Sentence number 71 talks about topic 1 in a fairly ordinary way. Sentence number 72 talks about topic 2 in a fairly ordinary way. Sentence number 73 talks about topic 3 in a fairly ordinary way. Sentence number 74 talks about topic 4 in a fairly ordinary way. Sentence number 75 talks about topic 5 in a fairly ordinary way. Sentence number 76 talks about topic 6 in a fairly ordinary way. Sentence number 77 talks about topic 0 in a fairly ordinary way. Sentence number 78 talks about topic 1 in a fairly ordinary way. Sentence number 79 talks about topic 2 in a fairly ordinary way.",
+    "tampering": {
+      "invisible_chars": 0,
+      "homoglyphs": 0
+    },
+    "sentences": [
+      "Sentence number 0 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 1 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 2 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 3 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 4 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 5 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 6 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 7 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 8 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 9 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 10 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 11 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 12 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 13 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 14 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 15 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 16 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 17 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 18 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 19 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 20 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 21 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 22 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 23 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 24 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 25 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 26 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 27 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 28 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 29 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 30 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 31 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 32 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 33 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 34 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 35 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 36 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 37 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 38 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 39 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 40 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 41 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 42 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 43 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 44 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 45 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 46 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 47 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 48 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 49 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 50 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 51 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 52 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 53 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 54 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 55 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 56 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 57 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 58 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 59 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 60 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 61 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 62 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 63 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 64 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 65 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 66 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 67 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 68 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 69 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 70 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 71 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 72 talks about topic 2 in a fairly ordinary way.",
+      "Sentence number 73 talks about topic 3 in a fairly ordinary way.",
+      "Sentence number 74 talks about topic 4 in a fairly ordinary way.",
+      "Sentence number 75 talks about topic 5 in a fairly ordinary way.",
+      "Sentence number 76 talks about topic 6 in a fairly ordinary way.",
+      "Sentence number 77 talks about topic 0 in a fairly ordinary way.",
+      "Sentence number 78 talks about topic 1 in a fairly ordinary way.",
+      "Sentence number 79 talks about topic 2 in a fairly ordinary way."
+    ],
+    "cleaned": "Sentence number 0 talks about topic 0 in a fairly ordinary way. Sentence number 1 talks about topic 1 in a fairly ordinary way. Sentence number 2 talks about topic 2 in a fairly ordinary way. Sentence number 3 talks about topic 3 in a fairly ordinary way. Sentence number 4 talks about topic 4 in a fairly ordinary way. Sentence number 5 talks about topic 5 in a fairly ordinary way. Sentence number 6 talks about topic 6 in a fairly ordinary way. Sentence number 7 talks about topic 0 in a fairly ordinary way. Sentence number 8 talks about topic 1 in a fairly ordinary way. Sentence number 9 talks about topic 2 in a fairly ordinary way. Sentence number 10 talks about topic 3 in a fairly ordinary way. Sentence number 11 talks about topic 4 in a fairly ordinary way. Sentence number 12 talks about topic 5 in a fairly ordinary way. Sentence number 13 talks about topic 6 in a fairly ordinary way. Sentence number 14 talks about topic 0 in a fairly ordinary way. Sentence number 15 talks about topic 1 in a fairly ordinary way. Sentence number 16 talks about topic 2 in a fairly ordinary way. Sentence number 17 talks about topic 3 in a fairly ordinary way. Sentence number 18 talks about topic 4 in a fairly ordinary way. Sentence number 19 talks about topic 5 in a fairly ordinary way. Sentence number 20 talks about topic 6 in a fairly ordinary way. Sentence number 21 talks about topic 0 in a fairly ordinary way. Sentence number 22 talks about topic 1 in a fairly ordinary way. Sentence number 23 talks about topic 2 in a fairly ordinary way. Sentence number 24 talks about topic 3 in a fairly ordinary way. Sentence number 25 talks about topic 4 in a fairly ordinary way. Sentence number 26 talks about topic 5 in a fairly ordinary way. Sentence number 27 talks about topic 6 in a fairly ordinary way. Sentence number 28 talks about topic 0 in a fairly ordinary way. Sentence number 29 talks about topic 1 in a fairly ordinary way. Sentence number 30 talks about topic 2 in a fairly ordinary way. Sentence number 31 talks about topic 3 in a fairly ordinary way. Sentence number 32 talks about topic 4 in a fairly ordinary way. Sentence number 33 talks about topic 5 in a fairly ordinary way. Sentence number 34 talks about topic 6 in a fairly ordinary way. Sentence number 35 talks about topic 0 in a fairly ordinary way. Sentence number 36 talks about topic 1 in a fairly ordinary way. Sentence number 37 talks about topic 2 in a fairly ordinary way. Sentence number 38 talks about topic 3 in a fairly ordinary way. Sentence number 39 talks about topic 4 in a fairly ordinary way. Sentence number 40 talks about topic 5 in a fairly ordinary way. Sentence number 41 talks about topic 6 in a fairly ordinary way. Sentence number 42 talks about topic 0 in a fairly ordinary way. Sentence number 43 talks about topic 1 in a fairly ordinary way. Sentence number 44 talks about topic 2 in a fairly ordinary way. Sentence number 45 talks about topic 3 in a fairly ordinary way. Sentence number 46 talks about topic 4 in a fairly ordinary way. Sentence number 47 talks about topic 5 in a fairly ordinary way. Sentence number 48 talks about topic 6 in a fairly ordinary way. Sentence number 49 talks about topic 0 in a fairly ordinary way. Sentence number 50 talks about topic 1 in a fairly ordinary way. Sentence number 51 talks about topic 2 in a fairly ordinary way. Sentence number 52 talks about topic 3 in a fairly ordinary way. Sentence number 53 talks about topic 4 in a fairly ordinary way. Sentence number 54 talks about topic 5 in a fairly ordinary way. Sentence number 55 talks about topic 6 in a fairly ordinary way. Sentence number 56 talks about topic 0 in a fairly ordinary way. Sentence number 57 talks about topic 1 in a fairly ordinary way. Sentence number 58 talks about topic 2 in a fairly ordinary way. Sentence number 59 talks about topic 3 in a fairly ordinary way. Sentence number 60 talks about topic 4 in a fairly ordinary way. Sentence number 61 talks about topic 5 in a fairly ordinary way. Sentence number 62 talks about topic 6 in a fairly ordinary way. Sentence number 63 talks about topic 0 in a fairly ordinary way. Sentence number 64 talks about topic 1 in a fairly ordinary way. Sentence number 65 talks about topic 2 in a fairly ordinary way. Sentence number 66 talks about topic 3 in a fairly ordinary way. Sentence number 67 talks about topic 4 in a fairly ordinary way. Sentence number 68 talks about topic 5 in a fairly ordinary way. Sentence number 69 talks about topic 6 in a fairly ordinary way. Sentence number 70 talks about topic 0 in a fairly ordinary way. Sentence number 71 talks about topic 1 in a fairly ordinary way. Sentence number 72 talks about topic 2 in a fairly ordinary way. Sentence number 73 talks about topic 3 in a fairly ordinary way. Sentence number 74 talks about topic 4 in a fairly ordinary way. Sentence number 75 talks about topic 5 in a fairly ordinary way. Sentence number 76 talks about topic 6 in a fairly ordinary way. Sentence number 77 talks about topic 0 in a fairly ordinary way. Sentence number 78 talks about topic 1 in a fairly ordinary way. Sentence number 79 talks about topic 2 in a fairly ordinary way.",
+    "analysis": {
+      "ai_probability": 0.5319069069069069,
+      "verdict": "mixed",
+      "ai_sentence_share": 0.0,
+      "word_count": 960,
+      "scores": [
+        0.028028028028028028,
+        0.5015015015015015,
+        0.06706706706706707,
+        0.6336336336336337,
+        0.1991991991991992,
+        0.7657657657657657,
+        0.004004004004004004,
+        0.24324324324324326,
+        0.4824824824824825,
+        0.7277277277277278,
+        0.972972972972973,
+        0.2172172172172172,
+        0.7837837837837838,
+        0.022022022022022022,
+        0.26126126126126126,
+        0.5005005005005005,
+        0.06606606606606606,
+        0.6326326326326326,
+        0.1981981981981982,
+        0.9159159159159159,
+        0.3053053053053053,
+        0.6956956956956957,
+        0.934934934934935,
+        0.5005005005005005,
+        0.06606606606606606,
+        0.6326326326326326,
+        0.1981981981981982,
+        0.43743743743743746,
+        0.6766766766766766,
+        0.06606606606606606,
+        0.7837837837837838,
+        0.5005005005005005,
+        0.06606606606606606,
+        0.6326326326326326,
+        0.8718718718718719,
+        0.11011011011011011,
+        0.34934934934934936,
+        0.9159159159159159,
+        0.48148148148148145,
+        0.1981981981981982,
+        0.9159159159159159,
+        0.3053053053053053,
+        0.5445445445445446,
+        0.7837837837837838,
+        0.34934934934934936,
+        0.9159159159159159,
+        0.48148148148148145,
+        0.04704704704704705,
+        0.2862862862862863,
+        0.6766766766766766,
+        0.06606606606606606,
+        0.7837837837837838,
+        0.34934934934934936,
+        0.9159159159159159,
+        0.48148148148148145,
+        0.7207207207207207,
+        0.95995995995996,
+        0.1981981981981982,
+        0.7647647647647647,
+        0.48148148148148145,
+        0.1981981981981982,
+        0.9159159159159159,
+        0.15415415415415415,
+        0.3933933933933934,
+        0.6326326326326326,
+        0.1981981981981982,
+        0.7647647647647647,
+        0.3303303303303303,
+        0.8968968968968969,
+        0.2862862862862863,
+        0.6766766766766766,
+        0.06606606606606606,
+        0.6326326326326326,
+        0.1981981981981982,
+        0.7647647647647647,
+        0.3303303303303303,
+        0.5695695695695696,
+        0.8088088088088088,
+        0.04704704704704705,
+        0.4364364364364364
+      ]
+    }
+  }
+]

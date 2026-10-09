@@ -16,7 +16,7 @@ export default function History() {
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight">History</h1>
-          <p className="mt-1 text-zinc-600 dark:text-zinc-400">Saved in this browser only. Nothing is stored on the server.</p>
+          <p className="mt-1 text-zinc-600 dark:text-zinc-400">Saved in this browser only. Nothing is sent anywhere.</p>
         </div>
         {entries.length > 0 && (
           <button

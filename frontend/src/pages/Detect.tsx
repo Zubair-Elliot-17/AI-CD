@@ -5,19 +5,17 @@ import clsx from "clsx";
 import { FileUp, Loader2, Sparkles, X } from "lucide-react";
 import { useRef, useState, type DragEvent } from "react";
 import { ResultView } from "../components/ResultView";
-import { ServerStatus } from "../components/ServerStatus";
+import { ModelStatus } from "../components/ModelStatus";
 import { api, ApiError, type DetectResult } from "../lib/api";
 import { countWords } from "../lib/format";
 import { history } from "../lib/history";
 import { SAMPLES } from "../lib/samples";
-import { useServerStatus } from "../lib/useServerStatus";
+import { useModelStatus } from "../lib/useModelStatus";
 
 const ACCEPT = ".pdf,.docx,.txt,.md";
-const DEFAULT_LIMITS = { min_words: 10, max_chars: 50_000, max_file_bytes: 1_000_000 };
 
 export default function Detect() {
-  const { state: serverState, health } = useServerStatus();
-  const limits = health ?? DEFAULT_LIMITS;
+  const { status, limits } = useModelStatus();
 
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -36,7 +34,7 @@ export default function Detect() {
     if (!f) return;
     setError(null);
     if (f.size > limits.max_file_bytes) {
-      setError(`That file is too large. The limit is ${Math.round(limits.max_file_bytes / 1000)} KB.`);
+      setError(`That file is too large. The limit is ${(limits.max_file_bytes / 1e6).toLocaleString()} MB.`);
       return;
     }
     setFile(f);
@@ -71,7 +69,7 @@ export default function Detect() {
           <h1 className="font-display text-3xl font-bold tracking-tight">AI Text Detector</h1>
           <p className="mt-1 text-zinc-600 dark:text-zinc-400">Paste some writing or drop in a document.</p>
         </div>
-        <ServerStatus state={serverState} />
+        <ModelStatus status={status} />
       </div>
 
       <div

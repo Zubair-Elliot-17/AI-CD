@@ -4,9 +4,9 @@
 
 # AI Content Detector
 
-**Paste text or upload a document and see, sentence by sentence, how likely it is to be AI-generated.**
+**Paste text or upload a document and see, sentence by sentence, how likely it is to be AI-generated. The model runs entirely in your browser.**
 
-[**Live demo**](https://aicd.vercel.app) · [Benchmarks](https://aicd.vercel.app/benchmarks) · [API docs](https://zubair-elliot-17-aicd-api.hf.space/docs) · [How it works](#how-it-works)
+[**Live demo**](https://aicd-nine.vercel.app) · [Benchmarks](https://aicd-nine.vercel.app/benchmarks) · [Model on Hugging Face](https://huggingface.co/ZubairElliot17/aicd-roberta-onnx) · [How it works](#how-it-works)
 
 [![CI](https://github.com/Zubair-Elliot-17/AI-CD/actions/workflows/ci.yml/badge.svg)](https://github.com/Zubair-Elliot-17/AI-CD/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)
@@ -33,17 +33,17 @@ The original version used a fine-tuned ELECTRA model behind a Flask API on AWS E
 | | 2025 capstone | 2026 rebuild |
 |---|---|---|
 | Model | ELECTRA, fine-tuned in [`ModelTrainer/`](ModelTrainer/fine_tuning.ipynb) | RoBERTa-base trained on modern LLM output ([Fakespot](https://huggingface.co/fakespot-ai/roberta-base-ai-text-detection-v1)) |
-| API | Flask, SQLite sessions, shared API key | FastAPI, stateless, typed schemas, rate limiting |
-| Inference | One model call per sentence | All sentences and passages in one batched pass |
+| Inference | Flask API on a server, one model call per sentence | In the browser: 8-bit ONNX model in a Web Worker, batched ([transformers.js](https://huggingface.co/docs/transformers.js)) |
+| API | Flask, SQLite sessions, shared API key | FastAPI, stateless, typed schemas, rate limiting (optional; same pipeline) |
 | Frontend | React + JS, MUI, Storybook | React 19 + TypeScript, Tailwind v4, dark mode |
 | History | Stored on the server | Stored only in the user's browser |
-| Hosting | EC2 + Amplify | Hugging Face Spaces (Docker) + Vercel |
+| Hosting | EC2 + Amplify | Static site on Vercel, model weights on the Hugging Face Hub. No server to run or pay for |
 | Quality | Manual testing | Pytest + Vitest, ruff + ESLint, GitHub Actions CI |
 | Evaluation | Random split of the training data | Held-out public benchmark, attack tests, calibrated thresholds |
 
 ## Results
 
-Both versions were scored on the same **2,474 texts** that neither was trained on: 1,400 from 11 LLMs (GPT-4o, GPT-4, Claude 1.3 to 3 Opus, Llama 3, Gemma 2, Mixtral) and 1,074 human texts from the same domains. Full charts are on the [Benchmarks page](https://aicd.vercel.app/benchmarks), and the raw numbers are in [`backend/eval/results.json`](backend/eval/results.json).
+Both versions were scored on the same **2,474 texts** that neither was trained on: 1,400 from 11 LLMs (GPT-4o, GPT-4, Claude 1.3 to 3 Opus, Llama 3, Gemma 2, Mixtral) and 1,074 human texts from the same domains. Full charts are on the [Benchmarks page](https://aicd-nine.vercel.app/benchmarks), and the raw numbers are in [`backend/eval/results.json`](backend/eval/results.json).
 
 | | 2025 capstone (ELECTRA) | 2026 model, no defence | **2026 rebuild** |
 |---|---|---|---|
@@ -52,6 +52,18 @@ Both versions were scored on the same **2,474 texts** that neither was trained o
 | AUROC, zero-width-space attack | 0.903 | 0.755 | **0.923** |
 | AUROC, look-alike letter attack | 0.835 | 0.596 | **0.923** |
 | Human texts flagged as AI | 14% | 10% | **10%** |
+
+**The browser model.** The live site runs an 8-bit quantized copy of the model so it can download in 125 MB instead of 500 MB. [`eval/onnx_check.py`](backend/eval/onnx_check.py) re-scores the same benchmark with it ([`eval/onnx.json`](backend/eval/onnx.json)):
+
+| | PyTorch (full precision) | Browser (8-bit ONNX) |
+|---|---|---|
+| AUROC, clean text | 0.923 | 0.922 |
+| AI caught when 1% of human text is flagged | 38% | 39% |
+| Human texts judged human | 74% | 70% |
+| Human texts called AI | 6.9% | 8.8% |
+| AI texts called AI | 68% | 70% |
+
+Ranking quality is unchanged, but quantization nudges scores upward a little, so the browser model calls slightly more human writing AI. The verdict thresholds were calibrated on the full-precision model.
 
 Three things came out of building the benchmark:
 
@@ -64,20 +76,22 @@ Three things came out of building the benchmark:
 - **Sentence-level highlights.** Each sentence is shaded by its AI score. Hover one to see its score.
 - **Mixed-content detection.** A human essay with a pasted-in AI paragraph is flagged as *mixed* instead of being averaged away (75% of such documents on the benchmark).
 - **Evasion detection.** Zero-width characters and Cyrillic/Greek look-alike letters are removed before scoring, and the result says how many were found.
-- **File uploads.** PDF, DOCX, TXT and Markdown, parsed in memory.
-- **Private.** The API stores nothing. History lives in `localStorage`.
-- **Handles cold starts.** The UI polls the API and shows when the free-tier server is waking up.
+- **Runs on your device.** The detector is an 8-bit ONNX export of the model (125 MB, cached after the first visit) running on WebAssembly in a Web Worker, multi-threaded thanks to cross-origin isolation. Text never leaves the browser, and there is no cold start.
+- **File uploads.** PDF (pdf.js), DOCX (mammoth) and plain text, parsed in the browser.
+- **Private.** Nothing is uploaded. History lives in `localStorage`.
 
 ## How it works
 
+The pipeline is written twice and kept in step: in TypeScript for the browser ([`frontend/src/lib/engine/`](frontend/src/lib/engine)) and in Python for the API and the benchmark ([`backend/app/`](backend/app)). [`parity.test.ts`](frontend/src/lib/engine/parity.test.ts) replays outputs recorded from the Python code (normalisation, sentence splitting, markdown cleaning and verdicts) and fails if the two drift apart.
+
 ```mermaid
 flowchart LR
-    A[Text or file] --> B[Extract text<br/>pypdf / python-docx]
+    A[Text or file] --> B[Extract text<br/>pdf.js / mammoth]
     B --> N[Normalise<br/>strip invisible chars,<br/>fix look-alike letters]
     N --> C[Split into sentences<br/>with char offsets]
     C --> D[Sentence windows<br/>sentence ± 1 neighbour]
     C --> E[~300-word passages]
-    D & E --> F[RoBERTa classifier<br/>one batched pass]
+    D & E --> F[RoBERTa classifier<br/>8-bit ONNX, Web Worker]
     F --> G[Document score<br/>word-weighted passages]
     F --> H[Per-sentence scores]
     G & H --> I[Verdict: ai / mixed / human]
@@ -86,7 +100,7 @@ flowchart LR
 1. **Normalise.** Invisible characters are removed, the text is NFKC-normalised, and Cyrillic/Greek look-alikes inside Latin words are mapped back. Genuine Russian or Greek text is left alone.
 2. **Split.** A regex splitter that knows about abbreviations (`Dr.`, `e.g.`, `U.S.`) produces sentence spans with character offsets, so highlights map back onto the original text exactly, line breaks included.
 3. **Score.** Each sentence is scored together with its neighbours, because single short sentences are too noisy to classify alone. The text is also split into ~300-word passages (the model's sweet spot under its 512-token limit) for the document-level score.
-4. **Classify.** Everything goes through the model in batches sorted by length, so little compute is spent on padding. A typical 250-word text takes about 0.9 seconds on 2 CPU threads.
+4. **Classify.** Everything goes through the model in batches sorted by length, so little compute is spent on padding. In the browser a typical 70–250-word text takes about 1–2 seconds on a laptop.
 5. **Verdict.** The document score sets the verdict (≥ 95% AI, ≤ 50% human, in between is mixed). If 35–65% of the words sit in sentences scoring ≥ 99%, the verdict becomes **mixed**. The model's scores bunch up near 0 and 1, which is why the calibrated cut-offs sit high.
 
 > AI detectors are probabilistic and produce false positives, especially on short, formal or non-native English writing. Treat results as one signal, never as proof.
@@ -106,26 +120,28 @@ backend/          FastAPI service
   Dockerfile      model weights baked in for fast cold starts
 frontend/         React 19 + TypeScript + Tailwind v4 (Vite)
   src/pages/      Home, Detect, Benchmarks, History
+  src/lib/engine/ in-browser detector: normalise, split, Web Worker model, verdicts
   src/lib/        API client, localStorage history store
 ModelTrainer/     original 2025 ELECTRA fine-tuning notebook
 docs/             original 2025 capstone report
-scripts/          Hugging Face Space deploy script
+scripts/          parity fixture generator, Hugging Face Space deploy script
 ```
 
 ## Running locally
 
-You'll need [uv](https://docs.astral.sh/uv/) and Node 22+.
+You'll need Node 22+, plus [uv](https://docs.astral.sh/uv/) for the backend.
 
 ```bash
-# API on http://127.0.0.1:8000 (docs at /docs). The first run downloads the ~500 MB model.
-cd backend
-uv sync
-uv run uvicorn app.main:app --reload
-
-# Web app on http://localhost:5173
+# Web app on http://localhost:5173. The model runs in the browser, so this is all you need.
 cd frontend
 npm install
 npm run dev
+
+# Optional: the API on http://127.0.0.1:8000 (docs at /docs). The first run downloads the ~500 MB model.
+# Start the web app with VITE_API_URL=http://127.0.0.1:8000 to use it instead of the browser model.
+cd backend
+uv sync
+uv run uvicorn app.main:app --reload
 ```
 
 Tests and linting:
@@ -160,7 +176,7 @@ Backend settings come from `AICD_*` environment variables (see [`backend/.env.ex
 | `AICD_RATE_LIMIT_PER_MINUTE` | `30` | Per client IP, `0` disables |
 | `AICD_MAX_CHARS` | `50000` | |
 
-The frontend reads `VITE_API_URL` at build time.
+The frontend reads `VITE_API_URL` at build time. Leave it unset to run the model in the browser.
 
 ## API
 
@@ -171,15 +187,16 @@ The frontend reads `VITE_API_URL` at build time.
 | `POST` | `/api/detect/file` | multipart `file` | Analyse a PDF / DOCX / TXT / MD |
 
 ```bash
-curl -X POST https://zubair-elliot-17-aicd-api.hf.space/api/detect \
+curl -X POST http://127.0.0.1:8000/api/detect \
   -H 'Content-Type: application/json' \
   -d '{"text": "Paste at least ten words of text here to see how the detector scores it."}'
 ```
 
 ## Deployment
 
-- **Backend:** a Docker [Hugging Face Space](https://huggingface.co/docs/hub/spaces-sdks-docker) (free CPU tier). `.github/workflows/deploy-backend.yml` redeploys it when `backend/` changes on `main`. It needs an `HF_TOKEN` secret and an `HF_SPACE` variable. `keepalive.yml` pings it daily so it doesn't go to sleep.
-- **Frontend:** Vercel, root directory `frontend/`, with `VITE_API_URL` pointing at the Space.
+- **Web app:** a static site on Vercel (root directory `frontend/`). [`vercel.json`](frontend/vercel.json) sets the cross-origin isolation headers that let ONNX Runtime use several threads.
+- **Model:** [`ZubairElliot17/aicd-roberta-onnx`](https://huggingface.co/ZubairElliot17/aicd-roberta-onnx) on the Hugging Face Hub, exported with Optimum and quantized with ONNX Runtime. [`eval/onnx_check.py`](backend/eval/onnx_check.py) re-scores the benchmark with it.
+- **API (optional):** the backend's Dockerfile runs anywhere that takes a container. `scripts/deploy_space.py` and `deploy-backend.yml` push it to a Hugging Face Docker Space, which now needs a PRO account.
 
 ## Acknowledgements
 

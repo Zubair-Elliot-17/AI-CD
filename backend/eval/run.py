@@ -67,7 +67,7 @@ def metrics(y: np.ndarray, p: np.ndarray) -> dict:
         "f1": round(f1_score(y, p >= 0.5), 4),
         # Share of AI texts caught while wrongly flagging at most 1% of human ones.
         "tpr_at_1pct_fpr": round(float(np.interp(0.01, fpr, tpr)), 4),
-        # The app calls a text "AI" at 70%, so these are its real hit and false-accusation rates.
+        # The app calls a text "AI" at 95%, so these are its real hit and false-accusation rates.
         "tpr": round(float(flagged[y == 1].mean()), 4),
         "fpr": round(float(flagged[y == 0].mean()), 4),
     }

@@ -4,7 +4,7 @@
 import { useSyncExternalStore } from "react";
 import type { DetectResult } from "./api";
 
-// History lives only in this browser; the server keeps nothing.
+// History lives only in this browser.
 export interface HistoryEntry extends DetectResult {
   created_at: string;
 }
