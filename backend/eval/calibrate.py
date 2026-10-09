@@ -1,8 +1,12 @@
 # AI Content Detector - CSC3003S Capstone Project (2025)
 # Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
-"""Grid-search verdict thresholds on the calibration set. Usage: python -m eval.calibrate"""
+"""Grid-search verdict thresholds on the calibration set.
 
+Usage: python -m eval.calibrate [--onnx DIR]  (--onnx tunes the browser's 8-bit model instead)
+"""
+
+import argparse
 import itertools
 import json
 from collections import Counter
@@ -18,13 +22,13 @@ from app.normalize import normalize
 from eval.build import CALIBRATION
 from eval.run import Recorder
 
-OUT = Path(__file__).parent / "calibration.json"
+ROOT = Path(__file__).parent
 MAX_HUMAN_AS_AI = 0.05  # never call more than 5% of human texts "AI"
 
 GRID = {
-    "ai": [0.7, 0.8, 0.9, 0.95],
+    "ai": [0.7, 0.8, 0.9, 0.95, 0.97, 0.98, 0.99],
     "human": [0.3, 0.5, 0.7],
-    "sentence": [0.5, 0.8, 0.9, 0.95, 0.97, 0.99],
+    "sentence": [0.5, 0.8, 0.9, 0.95, 0.97, 0.99, 0.995],
     "mixed_share": [0.2, 0.25, 0.3, 0.35],
     "min_sentences": [4, 8],
 }
@@ -46,10 +50,21 @@ def score(conf: dict) -> float:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--onnx", type=Path, help="Folder with model_quantized.onnx")
+    args = parser.parse_args()
+
     df = pd.read_json(CALIBRATION, lines=True)
     texts = [normalize(t)[0] for t in df.text]
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
-    detector = TransformerDetector(get_settings().model_id, batch_size=32, device=device)
+    if args.onnx:
+        from eval.onnx_check import OnnxDetector
+
+        detector = OnnxDetector(args.onnx, "model_quantized.onnx")
+        out = ROOT / "calibration_q8.json"
+    else:
+        device = "mps" if torch.backends.mps.is_available() else "cpu"
+        detector = TransformerDetector(get_settings().model_id, batch_size=32, device=device)
+        out = ROOT / "calibration.json"
     lookup = Recorder.prefetch(detector, texts)
 
     candidates = []
@@ -68,7 +83,7 @@ def main() -> None:
         print(f"{s:.3f} {t}\n  {conf}")
 
     best_score, best, best_conf = candidates[0]
-    OUT.write_text(
+    out.write_text(
         json.dumps(
             {
                 "texts": len(df),
@@ -88,7 +103,7 @@ def main() -> None:
         )
         + "\n"
     )
-    print(f"Wrote {OUT}")
+    print(f"Wrote {out}")
 
 
 if __name__ == "__main__":

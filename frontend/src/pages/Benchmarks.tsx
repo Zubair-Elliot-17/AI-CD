@@ -16,7 +16,20 @@ import {
   type Condition,
   type SystemKey,
 } from "../lib/benchmark";
+import onnx from "../data/onnx.json";
 import { pct } from "../lib/format";
+
+type Counts = Record<"ai" | "mixed" | "human", Record<"ai" | "mixed" | "human", number>>;
+const share = (c: Counts, actual: keyof Counts, verdict: keyof Counts) => {
+  const row = c[actual];
+  return pct(row[verdict] / (row.ai + row.mixed + row.human));
+};
+const BROWSER_ROWS: [string, (c: Counts) => string][] = [
+  ["Human writing judged human", (c) => share(c, "human", "human")],
+  ["Human writing called AI", (c) => share(c, "human", "ai")],
+  ["AI writing called AI", (c) => share(c, "ai", "ai")],
+  ["Mixed documents called mixed", (c) => share(c, "mixed", "mixed")],
+];
 
 const SYSTEMS: SystemKey[] = ["roberta_2026", "roberta_raw", "electra_2025"];
 const CONDITIONS: Condition[] = ["clean", "zero_width", "homoglyph"];
@@ -326,6 +339,45 @@ export default function Benchmarks() {
             </p>
           </Section>
         )}
+
+        <Section
+          title="The model in your browser"
+          lede={
+            <>
+              The live site runs an 8-bit quantized copy of the model (125 MB instead of 500 MB) so it can work without a
+              server. Quantizing nudges its scores up, so it got its own cut-offs, tuned the same way on the calibration
+              set.
+            </>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[520px] text-left text-sm tabular-nums">
+              <thead className="text-xs text-zinc-500 dark:text-zinc-400">
+                <tr>
+                  <th className="py-2 pr-4 font-medium" />
+                  <th className="py-2 pr-4 font-medium">Full precision</th>
+                  <th className="py-2 pr-4 font-medium">8-bit, original cut-offs</th>
+                  <th className="py-2 pr-4 font-medium">8-bit, own cut-offs (live)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {BROWSER_ROWS.map(([label, f]) => (
+                  <tr key={label} className="border-t border-zinc-100 dark:border-white/5">
+                    <td className="py-2 pr-4 font-medium">{label}</td>
+                    <td className="py-2 pr-4 text-zinc-600 dark:text-zinc-400">{f(onnx.pytorch.verdicts)}</td>
+                    <td className="py-2 pr-4 text-zinc-600 dark:text-zinc-400">{f(onnx.onnx_q8.verdicts)}</td>
+                    <td className="py-2 pr-4 font-semibold">{f(onnx.onnx_q8.verdicts_tuned)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+            AUROC is {onnx.onnx_q8.clean.auroc.toFixed(3)} for the 8-bit model and {onnx.pytorch.clean.auroc.toFixed(3)} at
+            full precision, so it ranks texts just as well. Script:{" "}
+            <a className="underline" href={`${REPO_URL}/blob/main/backend/eval/onnx_check.py`}>eval/onnx_check.py</a>.
+          </p>
+        </Section>
 
         <Section title="Method and caveats" lede="How the numbers above were produced, and where they don't apply.">
           <ul className="list-disc space-y-2 pl-5 text-sm text-zinc-700 dark:text-zinc-300">

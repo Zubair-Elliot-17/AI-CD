@@ -4,7 +4,7 @@
 // The in-browser detector: same pipeline as the FastAPI backend, with the model in a Web Worker.
 
 import type { DetectResult } from "../api";
-import { analyse } from "./analysis";
+import { analyse, BROWSER_THRESHOLDS } from "./analysis";
 import { extractText, FileError } from "./files";
 import { normalize } from "./normalize";
 import type { FromWorker } from "./protocol";
@@ -82,7 +82,7 @@ export async function detectText(input: string, source: "text" | "file" = "text"
   if (text.length > LIMITS.max_chars) throw new EngineError(`Text must be under ${LIMITS.max_chars.toLocaleString()} characters.`);
 
   const started = performance.now();
-  const a = await analyse(text, (t) => engine.predict(t));
+  const a = await analyse(text, (t) => engine.predict(t), BROWSER_THRESHOLDS);
   const round = (x: number) => Math.round(x * 10_000) / 10_000;
   return {
     id: crypto.randomUUID(),
