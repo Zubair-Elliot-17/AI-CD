@@ -4,7 +4,8 @@
 """Build the test and calibration sets from public datasets. Usage: python -m eval.build
 
 The test set uses COLING's dev split and the calibration set its train split, so tuning
-the verdict thresholds never sees a test text.
+the verdict thresholds never sees a test text. Calibration also gets student essays from
+DAIGT on prompts that eval/finetune.py never trains on.
 """
 
 from pathlib import Path
@@ -23,6 +24,14 @@ COLING_MODELS = ["gpt4o", "gpt4", "llama3-70b", "llama3-8b", "gemma2-9b-it", "mi
 COLING_PER_MODEL = 150
 CLAUDE_PER_MODEL = 100
 MIXED_DOCS = 150
+# DAIGT essay prompts held out of fine-tuning and used for calibration instead.
+DAIGT_CALIBRATION_PROMPTS = [
+    "Car-free cities",
+    "Exploring Venus",
+    "Phones and driving",
+    "Summer projects",
+]
+DAIGT_CALIBRATION_PER_KIND = 300
 COLUMNS = ["id", "text", "kind", "label", "dataset", "generator", "domain"]
 
 
@@ -54,6 +63,29 @@ def persuasion() -> pd.DataFrame:
         dataset="persuasion",
         domain="argument",
     )
+
+
+def daigt() -> pd.DataFrame:
+    """DAIGT v2: PERSUADE student essays plus LLM essays written for the same prompts."""
+    file = hf_hub_download(
+        "Yunij/kaggle-comp-daigt", "data/train-00000-of-00001.parquet", repo_type="dataset"
+    )
+    df = pd.read_parquet(file, columns=["text", "label", "prompt_name", "source"])
+    df = df[
+        (df.source != "train_essays") & df.text.str.split().str.len().between(MIN_WORDS, MAX_WORDS)
+    ]
+    df = df.drop_duplicates("text").reset_index(drop=True)
+    return df.assign(
+        id=[f"daigt-{i}" for i in range(len(df))],
+        generator=df.source.where(df.label == 1, "human"),
+        domain="essay",
+        dataset="daigt",
+    )
+
+
+def daigt_calibration(df: pd.DataFrame) -> pd.DataFrame:
+    held_out = df[df.prompt_name.isin(DAIGT_CALIBRATION_PROMPTS)]
+    return held_out.groupby("label").sample(n=DAIGT_CALIBRATION_PER_KIND, random_state=SEED)
 
 
 def coling(split: str, file: str, per_model: int) -> pd.DataFrame:
@@ -119,7 +151,9 @@ def main() -> None:
     test = pd.concat(
         [persuasion(), coling("dev", "0000.parquet", COLING_PER_MODEL)], ignore_index=True
     )
-    calibration = coling("train", "0000.parquet", 100).reset_index(drop=True)
+    calibration = pd.concat(
+        [coling("train", "0000.parquet", 100), daigt_calibration(daigt())], ignore_index=True
+    )
     # The shared task has a few near-duplicates across splits; keep them out of calibration.
     seen = {t[:200] for t in test.text}
     calibration = calibration[~calibration.text.str[:200].isin(seen)].copy()
