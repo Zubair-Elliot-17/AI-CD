@@ -20,6 +20,14 @@
 
 </div>
 
+## Project overview and introduction
+
+An 80-second narrated tour: the live site in action, how the code is laid out, and the key parts of the detection pipeline.
+
+[![Watch the project overview video](docs/screenshots/overview-poster.png)](docs/overview.mp4)
+
+[**▶ Watch the overview (MP4, 80 s)**](docs/overview.mp4)
+
 ## Why this project matters
 
 Schools and employers already use AI detectors to decide whether someone cheated. When a detector is wrong, a real person gets accused of something they didn't do, and most tools publish no evidence of how often that happens. This project treats that as the main engineering problem, not an afterthought.
