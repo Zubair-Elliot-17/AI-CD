@@ -26,7 +26,7 @@ An 80-second narrated tour: the live site in action, how the code is laid out, a
 
 [![The detector live: a mixed document gets sentence-level highlights](docs/screenshots/overview-preview.gif)](docs/overview.mp4)
 
-[**▶ Watch the overview (MP4, 80 s)**](docs/overview.mp4)
+https://github.com/user-attachments/assets/d4270693-c0bb-4216-b7dc-0f81771bb2e0
 
 ## Why this project matters
 
