@@ -36,7 +36,8 @@ class OnnxDetector:
         self.tokenizer = AutoTokenizer.from_pretrained(folder)
         label2id = {k.lower(): v for k, v in AutoConfig.from_pretrained(folder).label2id.items()}
         self.ai_index = label2id.get("ai", 1)
-        self.session = ort.InferenceSession(str(folder / file), providers=["CPUExecutionProvider"])
+        path = folder / file if (folder / file).exists() else folder / "onnx" / file
+        self.session = ort.InferenceSession(str(path), providers=["CPUExecutionProvider"])
 
     def predict(self, texts):
         cleaned = [clean_text(t) for t in texts]
