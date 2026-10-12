@@ -6,7 +6,7 @@
 
 **Paste text or upload a document and see, sentence by sentence, how likely it is to be AI-generated. The model runs entirely in your browser.**
 
-[**Live demo**](https://aicd-nine.vercel.app) · [Benchmarks](https://aicd-nine.vercel.app/benchmarks) · [Model on Hugging Face](https://huggingface.co/ZubairElliot17/aicd-roberta-onnx) · [How it works](#how-it-works)
+[**Live demo**](https://aicd-nine.vercel.app) · [2025 version](https://aicd-2025.vercel.app) · [Benchmarks](https://aicd-nine.vercel.app/benchmarks) · [Model on Hugging Face](https://huggingface.co/ZubairElliot17/aicd-roberta-onnx) · [How it works](#how-it-works)
 
 [![CI](https://github.com/Zubair-Elliot-17/AI-CD/actions/workflows/ci.yml/badge.svg)](https://github.com/Zubair-Elliot-17/AI-CD/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)
@@ -47,6 +47,10 @@ AI-CD started as our final-year **CSC3003S capstone at the University of Cape To
 - **Meekaaeel Booley**
 - **Mubashir Dawood**
 - **Zubair Elliot**
+
+**The 2025 capstone was a team project by the three students above. The 2026 rebuild (new model, in-browser inference, benchmark, evasion defence, calibration, FastAPI backend, React/TypeScript frontend, CI/CD and deployment) was done entirely by Zubair Elliot.**
+
+**See the before and after:** the [2025 version](https://aicd-2025.vercel.app) (the original UI, archived) and the [2026 rebuild](https://aicd-nine.vercel.app) (live). The archived site runs the original frontend without its server, and its sample texts show the results the 2025 model actually gave. The disguised-AI sample, for example, fooled the 2025 model but is caught by the rebuild.
 
 The original version used a fine-tuned ELECTRA model behind a Flask API on AWS EC2, with a React frontend on AWS Amplify. In 2026 the project was rebuilt:
 
