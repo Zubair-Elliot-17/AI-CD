@@ -24,7 +24,7 @@
 
 An 80-second narrated tour: the live site in action, how the code is laid out, and the key parts of the detection pipeline.
 
-[![Watch the project overview video](docs/screenshots/overview-poster.png)](docs/overview.mp4)
+[![The detector live: a mixed document gets sentence-level highlights](docs/screenshots/overview-preview.gif)](docs/overview.mp4)
 
 [**▶ Watch the overview (MP4, 80 s)**](docs/overview.mp4)
 
