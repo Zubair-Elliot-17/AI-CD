@@ -22,11 +22,9 @@
 
 ## Project overview and introduction
 
-An 80-second narrated tour: the live site in action, how the code is laid out, and the key parts of the detection pipeline.
+A 21-second launch video: a mixed document scored sentence by sentence, disguised AI caught, and the benchmark behind it. Every score shown is a real result from the live site. Click the preview for the full video with sound.
 
-[![The detector live: a mixed document gets sentence-level highlights](docs/screenshots/overview-preview.gif)](docs/overview.mp4)
-
-https://github.com/user-attachments/assets/d4270693-c0bb-4216-b7dc-0f81771bb2e0
+[![The detector live: a mixed document gets sentence-level highlights](docs/screenshots/launch-preview.gif)](docs/launch-video.mp4)
 
 ## Why this project matters
 
