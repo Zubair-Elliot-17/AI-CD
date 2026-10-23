@@ -22,9 +22,9 @@
 
 ## Project overview and introduction
 
-A 21-second launch video: a mixed document scored sentence by sentence, disguised AI caught, and the benchmark behind it. Every score shown is a real result from the live site. Click the preview for the full video with sound.
+A 21-second launch video: a mixed document scored sentence by sentence, disguised AI caught, and the benchmark behind it. Every score shown is a real result from the live site. Press play for sound.
 
-[![The detector live: a mixed document gets sentence-level highlights](docs/screenshots/launch-preview.gif)](docs/launch-video.mp4)
+https://github.com/user-attachments/assets/04eca767-3912-4304-a29d-6a85ae88ceec
 
 ## Why this project matters
 
