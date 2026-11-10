@@ -31,8 +31,8 @@ export function ModelStatus({ status }: { status: ModelState }) {
         <span
           className={clsx(
             "size-2 shrink-0 rounded-full",
-            status.state === "ready" && "bg-emerald-500",
-            ["checking", "waking", "downloading"].includes(status.state) && "animate-pulse bg-amber-400",
+            status.state === "ready" && "bg-ink dark:bg-white",
+            ["checking", "waking", "downloading"].includes(status.state) && "animate-pulse bg-zinc-400",
             status.state === "offline" && "bg-rose-500",
           )}
         />

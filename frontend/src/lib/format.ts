@@ -20,21 +20,19 @@ export const VERDICT_COPY: Record<Verdict, { title: string; blurb: string }> = {
   },
 };
 
-export const VERDICT_STYLES: Record<Verdict, { text: string; badge: string; stroke: string }> = {
+// Blue is human and orange is AI everywhere; a mixed verdict takes neither side.
+export const VERDICT_STYLES: Record<Verdict, { text: string; badge: string }> = {
   ai: {
-    text: "text-rose-600 dark:text-rose-400",
-    badge: "bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:ring-rose-500/30",
-    stroke: "stroke-rose-500",
+    text: "text-ai-700 dark:text-ai-300",
+    badge: "bg-ai-100 text-ai-700 ring-ai-300 dark:bg-ai-500/15 dark:text-ai-300 dark:ring-ai-500/40",
   },
   mixed: {
-    text: "text-amber-600 dark:text-amber-400",
-    badge: "bg-amber-50 text-amber-800 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-500/30",
-    stroke: "stroke-amber-500",
+    text: "text-ink dark:text-white",
+    badge: "bg-zinc-100 text-zinc-700 ring-zinc-300 dark:bg-white/10 dark:text-zinc-200 dark:ring-white/15",
   },
   human: {
-    text: "text-emerald-600 dark:text-emerald-400",
-    badge: "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/30",
-    stroke: "stroke-emerald-500",
+    text: "text-human-700 dark:text-human-300",
+    badge: "bg-human-100 text-human-700 ring-human-300 dark:bg-human-500/15 dark:text-human-300 dark:ring-human-500/40",
   },
 };
 
@@ -67,7 +65,7 @@ export function countWords(text: string) {
   return trimmed ? trimmed.split(/\s+/).length : 0;
 }
 
-/** The number shown on the dial: AI share of the text for mixed results, document score otherwise. */
+/** The headline number: AI share of the text for mixed results, document score otherwise. */
 export function headlineScore(r: { verdict: Verdict; ai_probability: number; ai_sentence_share: number }) {
   return r.verdict === "mixed" ? r.ai_sentence_share : r.ai_probability;
 }
