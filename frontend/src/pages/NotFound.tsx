@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
       <p className="font-display text-6xl font-bold">404</p>
-      <p className="mt-3 text-zinc-600 dark:text-zinc-400">That page doesn't exist.</p>
+      <h1 className="mt-3 text-zinc-600 dark:text-zinc-400">That page doesn't exist.</h1>
       <Link to="/" className="focus-ring mt-6 rounded font-semibold underline underline-offset-4">
         Go home
       </Link>

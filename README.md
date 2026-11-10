@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="frontend/public/favicon.png" width="64" alt="" />
+<img src="frontend/public/favicon.svg" width="64" alt="" />
 
 # AI Content Detector
 

@@ -46,8 +46,8 @@ export function Layout() {
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-20 border-b border-zinc-300/70 bg-paper/85 backdrop-blur-md dark:border-white/10 dark:bg-night/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-1 px-4 sm:gap-2 sm:px-6">
-          <Link to="/" className="focus-ring mr-auto flex items-center gap-2 rounded-md">
-            <img src="/favicon.png" alt="" className="size-8" />
+          <Link to="/" aria-label="AI-CD home" className="focus-ring mr-auto flex items-center gap-2 rounded-md">
+            <img src="/favicon.svg" alt="" className="size-7" />
             <span className="hidden font-display text-lg font-bold tracking-tight sm:inline">AI-CD</span>
           </Link>
           <nav className="flex items-center sm:gap-1">
