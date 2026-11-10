@@ -32,7 +32,7 @@ function Tooltip({ tip, width }: { tip: Tip | null; width: number }) {
   return (
     <div
       role="status"
-      className="pointer-events-none absolute z-10 w-[180px] rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs shadow-lg dark:border-white/10 dark:bg-zinc-900"
+      className="pointer-events-none absolute z-10 w-[180px] rounded-md border border-zinc-300 bg-white px-3 py-2 text-xs dark:border-white/10 dark:bg-zinc-900"
       style={{ left, top: Math.max(tip.y - 12, 0) }}
     >
       <p className="mb-1 text-zinc-500 dark:text-zinc-400">{tip.title}</p>

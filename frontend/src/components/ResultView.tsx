@@ -5,12 +5,30 @@ import clsx from "clsx";
 import { Cpu, FileText, Info, ShieldAlert, Type } from "lucide-react";
 import type { DetectResult } from "../lib/api";
 import { headlineScore, pct, VERDICT_COPY, VERDICT_STYLES } from "../lib/format";
-import { Gauge } from "./Gauge";
 import { HighlightedText } from "./HighlightedText";
+
+// One bar split between the two colours the highlights use: blue for human, orange for AI.
+function Score({ value: raw, label }: { value: number; label: string }) {
+  const value = Math.min(Math.max(raw, 0), 1);
+  return (
+    <div role="img" aria-label={`${label}: ${pct(value)}`} className="w-full shrink-0 sm:w-48">
+      <p className="font-display text-5xl font-bold tabular-nums">{pct(value)}</p>
+      <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{label}</p>
+      <div className="mt-4 flex h-3 overflow-hidden rounded-sm">
+        <span className="bg-human-500" style={{ width: `${(1 - value) * 100}%` }} />
+        <span className="flex-1 bg-ai-500" />
+      </div>
+      <p className="mt-1.5 flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
+        <span>Human</span>
+        <span>AI</span>
+      </p>
+    </div>
+  );
+}
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-white/5">
+    <div>
       <dt className="text-xs text-zinc-500 dark:text-zinc-400">{label}</dt>
       <dd className="mt-0.5 font-display text-lg font-semibold tabular-nums">{value}</dd>
     </div>
@@ -23,11 +41,11 @@ function TamperingNotice({ invisible, homoglyphs }: { invisible: number; homogly
     homoglyphs > 0 && `${homoglyphs.toLocaleString()} look-alike letter${homoglyphs === 1 ? "" : "s"}`,
   ].filter(Boolean);
   return (
-    <section role="alert" className="flex gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-      <ShieldAlert className="mt-0.5 size-5 shrink-0" />
+    <section role="alert" className="card flex gap-3 border-l-4 border-l-ai-500 p-4 text-sm dark:border-l-ai-500">
+      <ShieldAlert className="mt-0.5 size-5 shrink-0 text-ai-700 dark:text-ai-300" />
       <div>
         <p className="font-semibold">Possible evasion attempt</p>
-        <p className="mt-0.5">
+        <p className="mt-0.5 text-zinc-600 dark:text-zinc-400">
           This text contains {parts.join(" and ")}. These are a common trick for fooling AI detectors, so they were
           removed before scoring.
         </p>
@@ -50,28 +68,24 @@ export function ResultView({ result }: { result: DetectResult }) {
       {tampering && tampering.invisible_chars + tampering.homoglyphs > 0 && (
         <TamperingNotice invisible={tampering.invisible_chars} homoglyphs={tampering.homoglyphs} />
       )}
-      <section className="card flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-start" aria-labelledby="verdict">
+      <section className="card flex flex-col gap-8 p-6 sm:flex-row sm:p-8" aria-labelledby="verdict">
         {/* A mixed document's overall score is misleading, so show how much of it reads as AI. */}
-        <Gauge
-          value={headlineScore(result)}
-          strokeClass={style.stroke}
-          label={mixed ? "AI text" : "AI score"}
-        />
+        <Score value={headlineScore(result)} label={mixed ? "AI text" : "AI score"} />
         <div className="w-full min-w-0 flex-1">
-          <span className={clsx("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset", style.badge)}>
-            {mixed ? "Split verdict" : `${pct(result.confidence)} confidence`}
-          </span>
-          <h2 id="verdict" className={clsx("mt-2 font-display text-2xl font-bold sm:text-3xl", style.text)}>
+          <h2 id="verdict" className={clsx("font-display text-2xl font-bold sm:text-3xl", style.text)}>
             {copy.title}
           </h2>
-          <p className="mt-1 text-zinc-600 dark:text-zinc-400">{copy.blurb}</p>
-          <dl className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <p className="mt-2 text-zinc-600 dark:text-zinc-400">{copy.blurb}</p>
+          <span className={clsx("mt-3 inline-flex rounded px-2 py-0.5 text-xs font-semibold ring-1 ring-inset", style.badge)}>
+            {mixed ? "Split verdict" : `${pct(result.confidence)} confidence`}
+          </span>
+          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-zinc-200 pt-5 sm:grid-cols-4 dark:border-white/10">
             <Stat label={mixed ? "Document score" : "AI-leaning text"} value={pct(mixed ? result.ai_probability : result.ai_sentence_share)} />
             <Stat label="Words" value={result.word_count.toLocaleString()} />
             <Stat label="Sentences scored" value={String(scored)} />
             <Stat label="Analysis time" value={`${(result.elapsed_ms / 1000).toFixed(1)}s`} />
           </dl>
-          <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
             <span className="flex items-center gap-1">
               {result.source === "file" ? <FileText className="size-3.5" /> : <Type className="size-3.5" />}
               {result.filename ?? "Pasted text"}

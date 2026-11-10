@@ -2,47 +2,61 @@
    Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot */
 
 @import "tailwindcss";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/source-serif-4";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  /* Serif is for the writing being examined, never for interface text. */
+  --font-serif: "Source Serif 4 Variable", ui-serif, Georgia, serif;
 
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
-  --color-ink: #1b1530;
-  --color-night: #0f0c1d;
+  /* Interface ink: actions and navigation carry no hue, so colour only ever means human or AI. */
+  --color-brand-50: #f1f3f6;
+  --color-brand-100: #e3e6ec;
+  --color-brand-200: #c9ceda;
+  --color-brand-300: #a3abbd;
+  --color-brand-400: #77819a;
+  --color-brand-500: #525c75;
+  --color-brand-600: #2c3446;
+  --color-brand-700: #1e2533;
+  --color-brand-800: #171c27;
+  --color-brand-900: #101319;
+  --color-ink: #14171f;
+  --color-paper: #f7f8fa;
+  --color-night: #101319;
+
+  --color-human-100: #d6e6fb;
+  --color-human-300: #7fb2f2;
+  --color-human-500: #2a78d6;
+  --color-human-700: #1c5cab;
+  --color-ai-100: #fde0d2;
+  --color-ai-200: #f9bfa3;
+  --color-ai-300: #f59467;
+  --color-ai-500: #eb6834;
+  --color-ai-700: #a83f0e;
 }
 
 @layer base {
   /* Chart colours, checked for colour-blind separation and contrast in both themes. */
   :root {
-    --series-new: #7c3aed;
+    --series-new: #14171f;
     --series-old: #1baf7a;
-    --series-raw: #eb6834;
+    --series-raw: #8e4ec6;
     --class-human: #2a78d6;
     --class-ai: #eb6834;
   }
   .dark {
-    --series-new: #8b5cf6;
+    --series-new: #e3e6ec;
     --series-old: #199e70;
-    --series-raw: #d95926;
+    --series-raw: #a877e0;
     --class-human: #3987e5;
     --class-ai: #d95926;
   }
   html {
-    @apply bg-white text-ink antialiased dark:bg-night dark:text-zinc-100;
+    @apply bg-paper text-ink antialiased dark:bg-night dark:text-zinc-100;
     color-scheme: light;
   }
   html.dark {
@@ -54,9 +68,14 @@
 }
 
 @utility card {
-  @apply rounded-2xl border border-zinc-200/80 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.03];
+  @apply rounded-md border border-zinc-300/80 bg-white dark:border-white/10 dark:bg-white/[0.03];
+}
+
+/* The one primary action style: ink on paper, paper on night. */
+@utility btn {
+  @apply inline-flex items-center gap-2 rounded-md bg-ink px-5 py-2.5 font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-ink dark:hover:bg-brand-100;
 }
 
 @utility focus-ring {
-  @apply outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-night;
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-human-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper dark:focus-visible:ring-offset-night;
 }

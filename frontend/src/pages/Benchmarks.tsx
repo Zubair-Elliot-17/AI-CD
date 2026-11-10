@@ -1,7 +1,6 @@
 // AI Content Detector - CSC3003S Capstone Project (2025)
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
-import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { BarChart, Histogram, Legend, RocChart, TableView } from "../components/charts";
@@ -83,10 +82,7 @@ export default function Benchmarks() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-      <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-300">
-        Evaluation
-      </p>
-      <h1 className="mt-2 font-display text-4xl font-bold tracking-tight">How accurate is it?</h1>
+      <h1 className="font-display text-4xl font-bold tracking-tight">How accurate is it?</h1>
       <p className="mt-3 max-w-2xl text-zinc-600 dark:text-zinc-400">
         We tested the original 2025 capstone model and the 2026 rebuild on the same{" "}
         {dataset.total.toLocaleString()} texts: {dataset.ai.toLocaleString()} written by{" "}
@@ -140,7 +136,7 @@ export default function Benchmarks() {
               />
               <dl className="grid grid-cols-2 gap-3 text-sm">
                 {(["roberta_2026", "electra_2025"] as const).map((k) => (
-                  <div key={k} className="rounded-xl bg-zinc-50 p-3 dark:bg-white/5">
+                  <div key={k} className="rounded-md border border-zinc-200 p-3 dark:border-white/10">
                     <dt className="text-xs text-zinc-500 dark:text-zinc-400">{SYSTEM_SHORT[k]}</dt>
                     <dd className="mt-1 space-y-0.5 tabular-nums">
                       <p>
@@ -411,9 +407,9 @@ export default function Benchmarks() {
       <div className="mt-10 flex justify-center">
         <Link
           to="/detect"
-          className="focus-ring inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-brand-700"
+          className="focus-ring btn"
         >
-          Try the detector <ArrowRight className="size-4" />
+          Check your own text
         </Link>
       </div>
     </div>
