@@ -64,7 +64,7 @@ export function HighlightedText({ text, sentences }: Props) {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-zinc-200/80 px-5 py-3 sm:px-7 text-xs text-zinc-600 dark:border-white/10 dark:text-zinc-400">
         {LEGEND.map(({ tone, label }) => (
           <span key={tone} className="flex items-center gap-1.5">
-            <span className={clsx("size-3 rounded-sm ring-1 ring-black/5", TONE_CLASS[tone])} />
+            <span className={clsx("size-3 rounded-sm ring-1 ring-black/20 dark:ring-white/25", TONE_CLASS[tone])} />
             {label}
           </span>
         ))}

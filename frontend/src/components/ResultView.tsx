@@ -8,7 +8,8 @@ import { headlineScore, pct, VERDICT_COPY, VERDICT_STYLES } from "../lib/format"
 import { HighlightedText } from "./HighlightedText";
 
 // One bar split between the two colours the highlights use: blue for human, orange for AI.
-function Score({ value, label }: { value: number; label: string }) {
+function Score({ value: raw, label }: { value: number; label: string }) {
+  const value = Math.min(Math.max(raw, 0), 1);
   return (
     <div role="img" aria-label={`${label}: ${pct(value)}`} className="w-full shrink-0 sm:w-48">
       <p className="font-display text-5xl font-bold tabular-nums">{pct(value)}</p>
