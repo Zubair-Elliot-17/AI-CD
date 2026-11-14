@@ -26,21 +26,21 @@ function copy(s: ModelState) {
 
 export function ModelStatus({ status }: { status: ModelState }) {
   return (
-    <div role="status" className="flex flex-col gap-1.5 text-xs text-zinc-500 sm:items-end dark:text-zinc-400">
+    <div role="status" className="flex flex-col gap-1.5 text-xs text-muted sm:items-end">
       <p className="flex items-center gap-2">
         <span
           className={clsx(
             "size-2 shrink-0 rounded-full",
-            status.state === "ready" && "bg-ink dark:bg-white",
-            ["checking", "waking", "downloading"].includes(status.state) && "animate-pulse bg-zinc-400",
-            status.state === "offline" && "bg-rose-500",
+            status.state === "ready" && "bg-uv shadow-[0_0_8px_var(--uv)]",
+            ["checking", "waking", "downloading"].includes(status.state) && "animate-pulse bg-muted",
+            status.state === "offline" && "bg-danger",
           )}
         />
         {copy(status)}
       </p>
       {status.state === "downloading" && status.total > 0 && (
         <progress
-          className="h-1 w-full overflow-hidden rounded-full sm:w-64 [&::-moz-progress-bar]:bg-brand-500 [&::-webkit-progress-bar]:bg-zinc-200 [&::-webkit-progress-value]:bg-brand-500 dark:[&::-webkit-progress-bar]:bg-white/10"
+          className="h-1 w-full overflow-hidden rounded-full sm:w-64 bg-fg/10 [&::-moz-progress-bar]:bg-uv [&::-webkit-progress-bar]:bg-fg/10 [&::-webkit-progress-value]:bg-uv"
           value={status.loaded}
           max={status.total}
           aria-label="Model download progress"

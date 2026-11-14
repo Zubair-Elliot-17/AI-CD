@@ -11,7 +11,9 @@ function useWidth<T extends HTMLElement>() {
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ro = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    const ro = new ResizeObserver(([entry]) =>
+      setWidth(entry.contentRect.width),
+    );
     ro.observe(el);
     setWidth(el.getBoundingClientRect().width);
     return () => ro.disconnect();
@@ -32,28 +34,37 @@ function Tooltip({ tip, width }: { tip: Tip | null; width: number }) {
   return (
     <div
       role="status"
-      className="pointer-events-none absolute z-10 w-[180px] rounded-md border border-zinc-300 bg-white px-3 py-2 text-xs dark:border-white/10 dark:bg-zinc-900"
+      className="pointer-events-none absolute z-10 w-[180px] rounded-md border border-line-strong bg-raised px-3 py-2 text-xs shadow-lg"
       style={{ left, top: Math.max(tip.y - 12, 0) }}
     >
-      <p className="mb-1 text-zinc-500 dark:text-zinc-400">{tip.title}</p>
+      <p className="mb-1 text-muted">{tip.title}</p>
       {tip.rows.map((r) => (
         <p key={r.label} className="flex items-center gap-2">
-          <span className="h-0.5 w-3 shrink-0 rounded-full" style={{ background: r.color }} />
+          <span
+            className="h-0.5 w-3 shrink-0 rounded-full"
+            style={{ background: r.color }}
+          />
           <span className="font-semibold tabular-nums">{r.value}</span>
-          <span className="truncate text-zinc-500 dark:text-zinc-400">{r.label}</span>
+          <span className="truncate text-muted">{r.label}</span>
         </p>
       ))}
     </div>
   );
 }
 
-export function Legend({ items }: { items: { label: string; color: string; line?: boolean }[] }) {
+export function Legend({
+  items,
+}: {
+  items: { label: string; color: string; line?: boolean }[];
+}) {
   return (
-    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-600 dark:text-zinc-400">
+    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
       {items.map((i) => (
         <li key={i.label} className="flex items-center gap-1.5">
           <span
-            className={i.line ? "h-0.5 w-4 rounded-full" : "size-2.5 rounded-sm"}
+            className={
+              i.line ? "h-0.5 w-4 rounded-full" : "size-2.5 rounded-sm"
+            }
             style={{ background: i.color }}
           />
           {i.label}
@@ -63,15 +74,21 @@ export function Legend({ items }: { items: { label: string; color: string; line?
   );
 }
 
-export function TableView({ head, rows }: { head: string[]; rows: ReactNode[][] }) {
+export function TableView({
+  head,
+  rows,
+}: {
+  head: string[];
+  rows: ReactNode[][];
+}) {
   return (
     <details className="mt-3 text-sm">
-      <summary className="focus-ring w-fit cursor-pointer rounded text-xs font-medium text-zinc-500 hover:text-ink dark:text-zinc-400 dark:hover:text-white">
+      <summary className="focus-ring w-fit cursor-pointer rounded text-xs font-medium text-muted hover:text-fg">
         Show as table
       </summary>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full text-left tabular-nums">
-          <thead className="text-xs text-zinc-500 dark:text-zinc-400">
+          <thead className="text-xs text-muted">
             <tr>
               {head.map((h) => (
                 <th key={h} className="py-1 pr-4 font-medium">
@@ -82,7 +99,7 @@ export function TableView({ head, rows }: { head: string[]; rows: ReactNode[][] 
           </thead>
           <tbody>
             {rows.map((r, i) => (
-              <tr key={i} className="border-t border-zinc-100 dark:border-white/5">
+              <tr key={i} className="border-t border-line">
                 {r.map((c, j) => (
                   <td key={j} className="py-1 pr-4">
                     {c}
@@ -97,8 +114,8 @@ export function TableView({ head, rows }: { head: string[]; rows: ReactNode[][] 
   );
 }
 
-const AXIS = "fill-zinc-500 text-[11px] dark:fill-zinc-400";
-const GRID = "stroke-zinc-200 dark:stroke-white/10";
+const AXIS = "fill-muted text-[11px]";
+const GRID = "stroke-line";
 
 export interface LineSeries {
   key: string;
@@ -137,30 +154,78 @@ export function RocChart({ series }: { series: LineSeries[] }) {
           x: sx(grid[hover]),
           y: m.top,
           title: `At ${pct(grid[hover])} false positives`,
-          rows: series.map((s) => ({ color: s.color, label: s.label, value: pct(s.points[hover][1]) })),
+          rows: series.map((s) => ({
+            color: s.color,
+            label: s.label,
+            value: pct(s.points[hover][1]),
+          })),
         };
 
   return (
     <div ref={ref} className="relative">
       {w > 0 && (
-        <svg width={size} height={h + m.top + m.bottom} role="img" aria-label="ROC curves">
+        <svg
+          width={size}
+          height={h + m.top + m.bottom}
+          role="img"
+          aria-label="ROC curves"
+        >
           {ticks.map((t) => (
             <g key={t}>
-              <line x1={sx(0)} x2={sx(1)} y1={sy(t)} y2={sy(t)} className={GRID} />
-              <line x1={sx(t)} x2={sx(t)} y1={sy(0)} y2={sy(1)} className={GRID} />
-              <text x={m.left - 8} y={sy(t)} dy="0.32em" textAnchor="end" className={AXIS}>
+              <line
+                x1={sx(0)}
+                x2={sx(1)}
+                y1={sy(t)}
+                y2={sy(t)}
+                className={GRID}
+              />
+              <line
+                x1={sx(t)}
+                x2={sx(t)}
+                y1={sy(0)}
+                y2={sy(1)}
+                className={GRID}
+              />
+              <text
+                x={m.left - 8}
+                y={sy(t)}
+                dy="0.32em"
+                textAnchor="end"
+                className={AXIS}
+              >
                 {pct(t)}
               </text>
-              <text x={sx(t)} y={sy(0) + 16} textAnchor="middle" className={AXIS}>
+              <text
+                x={sx(t)}
+                y={sy(0) + 16}
+                textAnchor="middle"
+                className={AXIS}
+              >
                 {pct(t)}
               </text>
             </g>
           ))}
-          <line x1={sx(0)} y1={sy(0)} x2={sx(1)} y2={sy(1)} className="stroke-zinc-300 dark:stroke-white/20" />
-          <text x={sx(0.62)} y={sy(0.55)} className={AXIS} transform={`rotate(-45 ${sx(0.62)} ${sy(0.55)})`}>
+          <line
+            x1={sx(0)}
+            y1={sy(0)}
+            x2={sx(1)}
+            y2={sy(1)}
+            className="stroke-line-strong"
+          />
+          <text
+            x={sx(0.62)}
+            y={sy(0.55)}
+            className={AXIS}
+            transform={`rotate(-45 ${sx(0.62)} ${sy(0.55)})`}
+          >
             chance
           </text>
-          <text x={sx(0.5)} y={h + m.top + 32} textAnchor="middle" className={AXIS}>
+          <text
+            x={sx(0.5)}
+            y={h + m.top + 32}
+            textAnchor="middle"
+            className={AXIS}
+          >
             Human texts wrongly flagged
           </text>
           {series.map((s) => (
@@ -176,7 +241,13 @@ export function RocChart({ series }: { series: LineSeries[] }) {
           ))}
           {hover !== null && (
             <g>
-              <line x1={sx(grid[hover])} x2={sx(grid[hover])} y1={sy(0)} y2={sy(1)} className="stroke-zinc-400 dark:stroke-zinc-500" />
+              <line
+                x1={sx(grid[hover])}
+                x2={sx(grid[hover])}
+                y1={sy(0)}
+                y2={sy(1)}
+                className="stroke-muted"
+              />
               {series.map((s) => (
                 <circle
                   key={s.key}
@@ -184,7 +255,7 @@ export function RocChart({ series }: { series: LineSeries[] }) {
                   cy={sy(s.points[hover][1])}
                   r={4}
                   fill={s.color}
-                  className="stroke-white dark:stroke-night"
+                  className="stroke-surface"
                   strokeWidth={2}
                 />
               ))}
@@ -212,7 +283,13 @@ export interface BarRow {
 }
 
 /** Horizontal bars, one group per row, values 0-1 labelled at the tip. */
-export function BarChart({ rows, valueLabel = pct }: { rows: BarRow[]; valueLabel?: (v: number) => string }) {
+export function BarChart({
+  rows,
+  valueLabel = pct,
+}: {
+  rows: BarRow[];
+  valueLabel?: (v: number) => string;
+}) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [tip, setTip] = useState<Tip | null>(null);
   const per = rows[0]?.values.length ?? 1;
@@ -229,11 +306,27 @@ export function BarChart({ rows, valueLabel = pct }: { rows: BarRow[]; valueLabe
   return (
     <div ref={ref} className="relative">
       {w > 0 && (
-        <svg width={width} height={rows.length * groupH + 18} role="img" aria-label="Bar chart">
+        <svg
+          width={width}
+          height={rows.length * groupH + 18}
+          role="img"
+          aria-label="Bar chart"
+        >
           {[0, 0.5, 1].map((t) => (
             <g key={t}>
-              <line x1={sx(t)} x2={sx(t)} y1={0} y2={rows.length * groupH} className={GRID} />
-              <text x={sx(t)} y={rows.length * groupH + 14} textAnchor={stacked && t === 0 ? "start" : "middle"} className={AXIS}>
+              <line
+                x1={sx(t)}
+                x2={sx(t)}
+                y1={0}
+                y2={rows.length * groupH}
+                className={GRID}
+              />
+              <text
+                x={sx(t)}
+                y={rows.length * groupH + 14}
+                textAnchor={stacked && t === 0 ? "start" : "middle"}
+                className={AXIS}
+              >
                 {pct(t)}
               </text>
             </g>
@@ -247,7 +340,7 @@ export function BarChart({ rows, valueLabel = pct }: { rows: BarRow[]; valueLabe
                   y={stacked ? y0 - 9 : y0 + (groupH - 16) / 2}
                   dy="0.32em"
                   textAnchor={stacked ? "start" : "end"}
-                  className="fill-zinc-700 text-xs dark:fill-zinc-300"
+                  className="fill-fg text-xs"
                 >
                   {row.label}
                 </text>
@@ -260,16 +353,41 @@ export function BarChart({ rows, valueLabel = pct }: { rows: BarRow[]; valueLabe
                       x: sx(v.value),
                       y: y - 8,
                       title: row.label,
-                      rows: [{ color: v.color, label: v.label, value: valueLabel(v.value) }],
+                      rows: [
+                        {
+                          color: v.color,
+                          label: v.label,
+                          value: valueLabel(v.value),
+                        },
+                      ],
                     });
                   return (
-                    <g key={v.key} tabIndex={0} onPointerEnter={show} onFocus={show} onPointerLeave={() => setTip(null)} onBlur={() => setTip(null)} className="outline-none [&:hover>path]:opacity-80 [&:focus-visible>path]:opacity-80">
+                    <g
+                      key={v.key}
+                      tabIndex={0}
+                      onPointerEnter={show}
+                      onFocus={show}
+                      onPointerLeave={() => setTip(null)}
+                      onBlur={() => setTip(null)}
+                      className="outline-none [&:hover>path]:opacity-80 [&:focus-visible>path]:opacity-80"
+                    >
                       <path
                         d={`M${sx(0)},${y} h${len - r} a${r},${r} 0 0 1 ${r},${r} v${bar - 2 * r} a${r},${r} 0 0 1 -${r},${r} h-${len - r} z`}
                         fill={v.color}
                       />
-                      <rect x={sx(0)} y={y - gap} width={w} height={bar + 2 * gap} fill="transparent" />
-                      <text x={sx(v.value) + 6} y={y + bar / 2} dy="0.32em" className="fill-zinc-700 text-[11px] font-medium tabular-nums dark:fill-zinc-300">
+                      <rect
+                        x={sx(0)}
+                        y={y - gap}
+                        width={w}
+                        height={bar + 2 * gap}
+                        fill="transparent"
+                      />
+                      <text
+                        x={sx(v.value) + 6}
+                        y={y + bar / 2}
+                        dy="0.32em"
+                        className="fill-fg text-[11px] font-medium tabular-nums"
+                      >
                         {valueLabel(v.value)}
                       </text>
                     </g>
@@ -286,7 +404,19 @@ export function BarChart({ rows, valueLabel = pct }: { rows: BarRow[]; valueLabe
 }
 
 /** Score distribution for one class: columns over 0-100% AI score. */
-export function Histogram({ counts, edges, color, label, max }: { counts: number[]; edges: number[]; color: string; label: string; max: number }) {
+export function Histogram({
+  counts,
+  edges,
+  color,
+  label,
+  max,
+}: {
+  counts: number[];
+  edges: number[];
+  color: string;
+  label: string;
+  max: number;
+}) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [tip, setTip] = useState<Tip | null>(null);
   const m = { top: 8, bottom: 20, left: 4, right: 4 };
@@ -298,10 +428,27 @@ export function Histogram({ counts, edges, color, label, max }: { counts: number
   return (
     <div ref={ref} className="relative">
       {w > 0 && (
-        <svg width={width} height={h + m.top + m.bottom} role="img" aria-label={`${label} score distribution`}>
-          <line x1={m.left} x2={m.left + w} y1={m.top + h} y2={m.top + h} className={GRID} />
+        <svg
+          width={width}
+          height={h + m.top + m.bottom}
+          role="img"
+          aria-label={`${label} score distribution`}
+        >
+          <line
+            x1={m.left}
+            x2={m.left + w}
+            y1={m.top + h}
+            y2={m.top + h}
+            className={GRID}
+          />
           {[0, 0.5, 1].map((t) => (
-            <text key={t} x={m.left + t * w} y={m.top + h + 15} textAnchor={t === 0 ? "start" : t === 1 ? "end" : "middle"} className={AXIS}>
+            <text
+              key={t}
+              x={m.left + t * w}
+              y={m.top + h + 15}
+              textAnchor={t === 0 ? "start" : t === 1 ? "end" : "middle"}
+              className={AXIS}
+            >
               {pct(t)} AI
             </text>
           ))}
@@ -319,11 +466,25 @@ export function Histogram({ counts, edges, color, label, max }: { counts: number
                 rows: [{ color, label, value: `${c} (${pct(c / total)})` }],
               });
             return (
-              <g key={i} onPointerEnter={show} onPointerLeave={() => setTip(null)} className="[&:hover>path]:opacity-80">
+              <g
+                key={i}
+                onPointerEnter={show}
+                onPointerLeave={() => setTip(null)}
+                className="[&:hover>path]:opacity-80"
+              >
                 {c > 0 && (
-                  <path d={`M${x},${m.top + h} v-${ch - r} a${r},${r} 0 0 1 ${r},-${r} h${cw - 2 * r} a${r},${r} 0 0 1 ${r},${r} v${ch - r} z`} fill={color} />
+                  <path
+                    d={`M${x},${m.top + h} v-${ch - r} a${r},${r} 0 0 1 ${r},-${r} h${cw - 2 * r} a${r},${r} 0 0 1 ${r},${r} v${ch - r} z`}
+                    fill={color}
+                  />
                 )}
-                <rect x={x - 1} y={m.top} width={colW} height={h} fill="transparent" />
+                <rect
+                  x={x - 1}
+                  y={m.top}
+                  width={colW}
+                  height={h}
+                  fill="transparent"
+                />
               </g>
             );
           })}

@@ -2,80 +2,227 @@
    Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot */
 
 @import "tailwindcss";
-@import "@fontsource-variable/bricolage-grotesque";
-@import "@fontsource-variable/source-serif-4";
+@import "@fontsource-variable/fraunces/opsz.css";
+@import "@fontsource-variable/geist";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
-  /* Serif is for the writing being examined, never for interface text. */
-  --font-serif: "Source Serif 4 Variable", ui-serif, Georgia, serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  /* Fraunces is for headings and for the writing being examined. */
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-serif: "Fraunces Variable", ui-serif, Georgia, serif;
+}
 
-  /* Interface ink: actions and navigation carry no hue, so colour only ever means human or AI. */
-  --color-brand-50: #f1f3f6;
-  --color-brand-100: #e3e6ec;
-  --color-brand-200: #c9ceda;
-  --color-brand-300: #a3abbd;
-  --color-brand-400: #77819a;
-  --color-brand-500: #525c75;
-  --color-brand-600: #2c3446;
-  --color-brand-700: #1e2533;
-  --color-brand-800: #171c27;
-  --color-brand-900: #101319;
-  --color-ink: #14171f;
-  --color-paper: #f7f8fa;
-  --color-night: #101319;
-
-  --color-human-100: #d6e6fb;
-  --color-human-300: #7fb2f2;
-  --color-human-500: #2a78d6;
-  --color-human-700: #1c5cab;
-  --color-ai-100: #fde0d2;
-  --color-ai-200: #f9bfa3;
-  --color-ai-300: #f59467;
-  --color-ai-500: #eb6834;
-  --color-ai-700: #a83f0e;
+/* Semantic colours switch with the theme, so components rarely need dark: variants.
+   Violet is the lamp (interface and actions), blue is human, amber is AI. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-uv: var(--uv);
+  --color-on-uv: var(--on-uv);
+  --color-human: var(--human);
+  --color-ai: var(--ai);
+  --color-danger: var(--danger);
+  --color-human-wash: var(--human-wash);
+  --color-ai-wash: var(--ai-wash);
+  --color-ai-wash-soft: var(--ai-wash-soft);
+  --color-unsure-wash: var(--unsure-wash);
 }
 
 @layer base {
-  /* Chart colours, checked for colour-blind separation and contrast in both themes. */
+  /* Daylight theme. Text colours keep 4.5:1 on bg and surface; chart colours keep 3:1. */
   :root {
-    --series-new: #14171f;
-    --series-old: #1baf7a;
-    --series-raw: #8e4ec6;
-    --class-human: #2a78d6;
-    --class-ai: #eb6834;
+    --bg: #f4f3fb;
+    --surface: #ffffff;
+    --raised: #ffffff;
+    --line: #dedbee;
+    --line-strong: #c4bfdd;
+    --fg: #1a1638;
+    --muted: #5d5884;
+    --uv: #5b47e0;
+    --on-uv: #ffffff;
+    --human: #1a66c2;
+    --ai: #a94f00;
+    --danger: #c0264a;
+    --human-wash: #d6e8fc;
+    --ai-wash: #ffd89a;
+    --ai-wash-soft: #ffeccb;
+    --unsure-wash: #e9e7f3;
+
+    --series-new: #1a1638;
+    --series-old: #1a9e6f;
+    --series-raw: #c93d86;
+    --class-human: #1a66c2;
+    --class-ai: #c86f00;
   }
+  /* Lamp-on theme: deep indigo, so amber and blue read as fluorescence. */
   .dark {
-    --series-new: #e3e6ec;
-    --series-old: #199e70;
-    --series-raw: #a877e0;
-    --class-human: #3987e5;
-    --class-ai: #d95926;
+    --bg: #14112b;
+    --surface: #1c1840;
+    --raised: #262152;
+    --line: rgb(196 190 255 / 0.13);
+    --line-strong: rgb(196 190 255 / 0.26);
+    --fg: #ecebff;
+    --muted: #a7a3d0;
+    --uv: #8f80ff;
+    --on-uv: #120f2a;
+    --human: #6cc4ff;
+    --ai: #ffb547;
+    --danger: #ff7a93;
+    --human-wash: rgb(108 196 255 / 0.2);
+    --ai-wash: rgb(255 181 71 / 0.36);
+    --ai-wash-soft: rgb(255 181 71 / 0.15);
+    --unsure-wash: rgb(196 190 255 / 0.11);
+
+    --series-new: #ecebff;
+    --series-old: #3fcf9a;
+    --series-raw: #f283c0;
+    --class-human: #6cc4ff;
+    --class-ai: #ffb547;
   }
   html {
-    @apply bg-paper text-ink antialiased dark:bg-night dark:text-zinc-100;
+    background-color: var(--bg);
+    color: var(--fg);
     color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   html.dark {
     color-scheme: dark;
   }
   ::selection {
-    @apply bg-brand-200 text-ink;
+    background-color: color-mix(in oklab, var(--uv) 30%, transparent);
   }
 }
 
 @utility card {
-  @apply rounded-md border border-zinc-300/80 bg-white dark:border-white/10 dark:bg-white/[0.03];
+  @apply rounded-lg border border-line bg-surface;
 }
 
-/* The one primary action style: ink on paper, paper on night. */
+/* The one primary action: the lamp colour. */
 @utility btn {
-  @apply inline-flex items-center gap-2 rounded-md bg-ink px-5 py-2.5 font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-ink dark:hover:bg-brand-100;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-uv px-5 py-2.5 font-semibold text-on-uv transition hover:brightness-110 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:brightness-100;
+}
+
+@utility btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-line-strong px-5 py-2.5 font-semibold transition-colors hover:border-fg/50 hover:bg-fg/5;
 }
 
 @utility focus-ring {
-  @apply outline-none focus-visible:ring-2 focus-visible:ring-human-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper dark:focus-visible:ring-offset-night;
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-uv focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+}
+
+/* Home hero: a UV beam sweeps across the specimen once and reveals who wrote what. */
+@property --beam {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 120%;
+}
+@keyframes uv-sweep {
+  from {
+    --beam: -20%;
+  }
+  to {
+    --beam: 120%;
+  }
+}
+.uv-stage {
+  animation: uv-sweep 3.6s cubic-bezier(0.5, 0.05, 0.4, 1) 0.6s both;
+}
+/* Two stacked copies of the text: the marked one shows left of the beam, the plain one right of it. */
+.uv-reveal {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--beam) - 4%), transparent calc(var(--beam) + 1%));
+  mask-image: linear-gradient(90deg, #000 calc(var(--beam) - 4%), transparent calc(var(--beam) + 1%));
+}
+.uv-dim {
+  -webkit-mask-image: linear-gradient(90deg, transparent calc(var(--beam) - 4%), #000 calc(var(--beam) + 1%));
+  mask-image: linear-gradient(90deg, transparent calc(var(--beam) - 4%), #000 calc(var(--beam) + 1%));
+}
+.uv-beam {
+  left: var(--beam);
+}
+.uv-ai {
+  border-radius: 0.15em;
+  background-color: var(--ai-wash);
+  box-decoration-break: clone;
+}
+.uv-human {
+  border-radius: 0.15em;
+  background-color: var(--human-wash);
+  box-decoration-break: clone;
+}
+.dark .uv-ai {
+  color: var(--ai);
+  background-color: var(--ai-wash-soft);
+  text-shadow: 0 0 0.45em rgb(255 181 71 / 0.55);
+}
+.dark .uv-human {
+  color: var(--human);
+  background-color: transparent;
+}
+
+/* Detector: a scan line passes over the text while it is analysed. */
+@keyframes scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.scan-sweep {
+  background: linear-gradient(
+    to bottom,
+    transparent 55%,
+    color-mix(in oklab, var(--uv) 14%, transparent) 97%,
+    var(--uv) 99.4%,
+    transparent 100%
+  );
+  animation: scan 1.9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Results: highlights wash in sentence by sentence. */
+@keyframes wash-in {
+  from {
+    background-color: transparent;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+.wash-in {
+  animation: wash-in 0.6s ease-out both;
+  animation-delay: calc(min(var(--i, 0), 30) * 45ms + 250ms);
+}
+.rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uv-stage,
+  .scan-sweep,
+  .wash-in,
+  .rise {
+    animation: none;
+  }
+  .uv-reveal {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .uv-dim {
+    opacity: 0;
+  }
+  .uv-beam,
+  .scan-sweep {
+    display: none;
+  }
 }
