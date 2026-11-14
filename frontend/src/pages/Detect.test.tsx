@@ -1,7 +1,7 @@
 // AI Content Detector - CSC3003S Capstone Project (2025)
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -19,8 +19,22 @@ const health = {
 };
 
 function json(body: unknown, status = 200) {
-  return Promise.resolve(new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } }));
+  return Promise.resolve(
+    new Response(JSON.stringify(body), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    }),
+  );
 }
+
+// Results are held for the minimum analysis time, so tests run on fake timers and skip ahead.
+let user: ReturnType<typeof userEvent.setup>;
+beforeEach(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+});
+afterEach(() => vi.useRealTimers());
+const skipAnalysis = () => act(() => vi.advanceTimersByTimeAsync(5000));
 
 function renderPage() {
   const router = createMemoryRouter([{ path: "/", element: <Detect /> }]);
@@ -58,31 +72,48 @@ describe("Detect page (in-browser model)", () => {
     expect(analyse).toBeDisabled();
     expect(screen.getByText(/never leaves this device/)).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: "Mixed sample" }));
-    await userEvent.click(analyse);
+    await user.click(screen.getByRole("button", { name: "Mixed sample" }));
+    await user.click(analyse);
 
-    expect(await screen.findByRole("heading", { name: "Mixed signals" })).toBeInTheDocument();
+    expect(screen.getByText("Cleaning the text…")).toBeInTheDocument();
+    expect(history.list()).toHaveLength(0);
+    await skipAnalysis();
+    expect(
+      await screen.findByRole("heading", { name: "Mixed signals" }),
+    ).toBeInTheDocument();
     expect(history.list()[0].id).toBe(result.id);
     expect(engine.detectText.mock.calls[0][0]).toContain("bike");
   });
 
   it("shows the engine's validation message", async () => {
     const { EngineError } = await import("../lib/engine");
-    engine.detectText.mockRejectedValue(new EngineError("Text must be at least 10 words long."));
+    engine.detectText.mockRejectedValue(
+      new EngineError("Text must be at least 10 words long."),
+    );
     renderPage();
-    await userEvent.click(screen.getByRole("button", { name: "AI sample" }));
-    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("at least 10 words");
+    await user.click(screen.getByRole("button", { name: "AI sample" }));
+    await user.click(screen.getByRole("button", { name: /analyse/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "at least 10 words",
+    );
   });
 
   it("reads a dropped-in file locally", async () => {
-    engine.detectFile.mockResolvedValue({ ...result, source: "file", filename: "essay.pdf" });
+    engine.detectFile.mockResolvedValue({
+      ...result,
+      source: "file",
+      filename: "essay.pdf",
+    });
     const { container } = renderPage();
-    const input = container.querySelector<HTMLInputElement>('input[type="file"]')!;
-    await userEvent.upload(input, new File(["%PDF"], "essay.pdf", { type: "application/pdf" }));
+    const input =
+      container.querySelector<HTMLInputElement>('input[type="file"]')!;
+    await user.upload(
+      input,
+      new File(["%PDF"], "essay.pdf", { type: "application/pdf" }),
+    );
 
     expect(screen.getByText("essay.pdf")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
+    await user.click(screen.getByRole("button", { name: /analyse/i }));
     await waitFor(() => expect(engine.detectFile).toHaveBeenCalled());
   });
 });
@@ -110,24 +141,35 @@ describe("Detect page (FastAPI backend)", () => {
   }
 
   it("posts the text to the API", async () => {
-    fetchMock.mockImplementation((url: string) => (url.endsWith("/health") ? json(health) : json(result)));
+    fetchMock.mockImplementation((url: string) =>
+      url.endsWith("/health") ? json(health) : json(result),
+    );
     await renderServerPage();
     expect(await screen.findByText("Model ready")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Mixed sample" }));
-    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
+    await user.click(screen.getByRole("button", { name: "Mixed sample" }));
+    await user.click(screen.getByRole("button", { name: /analyse/i }));
 
-    expect(await screen.findByRole("heading", { name: "Mixed signals" })).toBeInTheDocument();
-    const [, init] = fetchMock.mock.calls.find(([url]) => url === "http://api.test/api/detect")!;
+    await skipAnalysis();
+    expect(
+      await screen.findByRole("heading", { name: "Mixed signals" }),
+    ).toBeInTheDocument();
+    const [, init] = fetchMock.mock.calls.find(
+      ([url]) => url === "http://api.test/api/detect",
+    )!;
     expect(JSON.parse(init.body).text).toContain("bike");
   });
 
   it("shows the server's error message", async () => {
     fetchMock.mockImplementation((url: string) =>
-      url.endsWith("/health") ? json(health) : json({ detail: "Too many requests. Try again in a minute." }, 429),
+      url.endsWith("/health")
+        ? json(health)
+        : json({ detail: "Too many requests. Try again in a minute." }, 429),
     );
     await renderServerPage();
-    await userEvent.click(screen.getByRole("button", { name: "AI sample" }));
-    await userEvent.click(screen.getByRole("button", { name: /analyse/i }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Too many requests");
+    await user.click(screen.getByRole("button", { name: "AI sample" }));
+    await user.click(screen.getByRole("button", { name: /analyse/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Too many requests",
+    );
   });
 });

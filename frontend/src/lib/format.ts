@@ -20,20 +20,11 @@ export const VERDICT_COPY: Record<Verdict, { title: string; blurb: string }> = {
   },
 };
 
-// Blue is human and orange is AI everywhere; a mixed verdict takes neither side.
+// Blue is human and amber is AI everywhere; a mixed verdict takes neither side.
 export const VERDICT_STYLES: Record<Verdict, { text: string; badge: string }> = {
-  ai: {
-    text: "text-ai-700 dark:text-ai-300",
-    badge: "bg-ai-100 text-ai-700 ring-ai-300 dark:bg-ai-500/15 dark:text-ai-300 dark:ring-ai-500/40",
-  },
-  mixed: {
-    text: "text-ink dark:text-white",
-    badge: "bg-zinc-100 text-zinc-700 ring-zinc-300 dark:bg-white/10 dark:text-zinc-200 dark:ring-white/15",
-  },
-  human: {
-    text: "text-human-700 dark:text-human-300",
-    badge: "bg-human-100 text-human-700 ring-human-300 dark:bg-human-500/15 dark:text-human-300 dark:ring-human-500/40",
-  },
+  ai: { text: "text-ai", badge: "bg-ai-wash-soft text-ai ring-ai/40" },
+  mixed: { text: "text-fg", badge: "bg-unsure-wash text-fg ring-line-strong" },
+  human: { text: "text-human", badge: "bg-human-wash/60 text-human ring-human/40" },
 };
 
 /**

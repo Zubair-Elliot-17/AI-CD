@@ -26,7 +26,7 @@ function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
-      className="focus-ring rounded-md p-2 text-zinc-500 hover:bg-zinc-200/60 hover:text-ink dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-white"
+      className="focus-ring rounded-full p-2 text-muted transition-colors hover:bg-fg/[0.07] hover:text-fg"
     >
       {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
     </button>
@@ -35,20 +35,18 @@ function ThemeToggle() {
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   clsx(
-    "focus-ring rounded-md px-2 py-2 text-sm font-medium transition-colors sm:px-3",
-    isActive
-      ? "bg-ink/[0.07] text-ink dark:bg-white/10 dark:text-white"
-      : "text-zinc-600 hover:text-ink dark:text-zinc-400 dark:hover:text-white",
+    "focus-ring rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors sm:px-3.5",
+    isActive ? "bg-uv/15 text-fg" : "text-muted hover:text-fg",
   );
 
 export function Layout() {
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-20 border-b border-zinc-300/70 bg-paper/85 backdrop-blur-md dark:border-white/10 dark:bg-night/80">
+      <header className="sticky top-0 z-20 border-b border-line bg-bg/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-1 px-4 sm:gap-2 sm:px-6">
           <Link to="/" aria-label="AI-CD home" className="focus-ring mr-auto flex items-center gap-2 rounded-md">
             <img src="/favicon.svg" alt="" className="size-7" />
-            <span className="hidden font-display text-lg font-bold tracking-tight sm:inline">AI-CD</span>
+            <span className="hidden font-display text-xl font-semibold tracking-tight sm:inline">AI-CD</span>
           </Link>
           <nav className="flex items-center sm:gap-1">
             <NavLink to="/detect" className={navClass}>
@@ -66,7 +64,7 @@ export function Layout() {
             target="_blank"
             rel="noreferrer"
             aria-label="Source code on GitHub"
-            className="focus-ring rounded-md p-2 text-zinc-500 hover:bg-zinc-200/60 hover:text-ink dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-white"
+            className="focus-ring rounded-full p-2 text-muted transition-colors hover:bg-fg/[0.07] hover:text-fg"
           >
             <GitHubIcon className="size-5" />
           </a>
@@ -78,8 +76,8 @@ export function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-zinc-300/70 dark:border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:text-zinc-400">
+      <footer className="border-t border-line">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <p>
             Built by Meekaaeel Booley, Mubashir Dawood and Zubair Elliot for the UCT CSC3003S capstone.
           </p>

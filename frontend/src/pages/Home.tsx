@@ -1,15 +1,15 @@
 // AI Content Detector - CSC3003S Capstone Project (2025)
 // Authors: Meekaaeel Booley, Mubashir Dawood, Zubair Elliot
 
-import clsx from "clsx";
-import type { ReactNode } from "react";
+import { RotateCcw } from "lucide-react";
+import { useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { GitHubIcon } from "../components/GitHubIcon";
 import { REPO_URL } from "../components/Layout";
 import { benchmark } from "../lib/benchmark";
 import { pct } from "../lib/format";
 
-// Four sentences from the detector's mixed sample, marked the way a real result marks them.
+// Four sentences from the detector's mixed sample: a person wrote the first two, a model the last two.
 const SPECIMEN = [
   { ai: false, text: "Took way longer than it should've because the chain tool I bought was the wrong size, classic." },
   { ai: false, text: "Anyway the gears still skip a bit on the big cog but it rides." },
@@ -51,152 +51,194 @@ function correct(kind: "human" | "ai", run: "calibrated" | "uncalibrated" = "cal
   const row = systems.roberta_2026.verdicts![run][kind];
   return row[kind] / (row.ai + row.mixed + row.human);
 }
+const auroc = (n: number) => n.toFixed(2);
+
+// Each claim compared with the baseline it improves on, both drawn on a 0–1 scale.
 const RESULTS = [
   {
-    value: systems.roberta_2026.conditions.clean.auroc.toFixed(2),
     label: `AUROC on ${dataset.total.toLocaleString()} held-out texts`,
-    note: `vs ${systems.electra_2025.conditions.clean.auroc.toFixed(2)} for the 2025 model`,
+    value: systems.roberta_2026.conditions.clean.auroc,
+    format: auroc,
+    base: systems.electra_2025.conditions.clean.auroc,
+    baseLabel: "2025 model",
   },
   {
-    value: pct(correct("human")),
-    label: "of human writing judged human",
-    note: `up from ${pct(correct("human", "uncalibrated"))} before threshold calibration`,
+    label: "Human writing judged human",
+    value: correct("human"),
+    format: pct,
+    base: correct("human", "uncalibrated"),
+    baseLabel: "Before threshold calibration",
   },
   {
-    value: systems.roberta_2026.conditions.homoglyph.auroc.toFixed(2),
     label: "AUROC under a look-alike letter attack",
-    note: `the undefended model falls to ${systems.roberta_raw.conditions.homoglyph.auroc.toFixed(2)}`,
+    value: systems.roberta_2026.conditions.homoglyph.auroc,
+    format: auroc,
+    base: systems.roberta_raw.conditions.homoglyph.auroc,
+    baseLabel: "Undefended model",
   },
 ];
 
 const TEAM = ["Meekaaeel Booley", "Mubashir Dawood", "Zubair Elliot"];
 
+/** The specimen under a UV lamp: one beam pass reveals which sentences a model wrote. */
 function Specimen() {
+  const [run, setRun] = useState(0);
+  const text = "font-display text-[clamp(1.35rem,0.9rem+1.9vw,2.35rem)] leading-[1.45] tracking-[-0.01em]";
   return (
-    <figure className="card">
-      <div className="divide-y divide-zinc-200 dark:divide-white/10">
-        {SPECIMEN.map(({ ai, text }) => (
-          <p key={text} className="grid gap-x-5 gap-y-1 px-5 py-3.5 sm:grid-cols-[1fr_7.5rem] sm:px-6">
-            <span className="font-serif text-[1.0625rem] leading-8">
-              <mark
-                className={clsx(
-                  "rounded-sm box-decoration-clone px-0.5 text-inherit",
-                  ai ? "bg-ai-200 dark:bg-ai-500/45" : "bg-human-100 dark:bg-human-500/25",
-                )}
-              >
-                {text}
-              </mark>
+    <figure>
+      <div key={run} className="uv-stage card relative overflow-hidden px-5 py-7 sm:px-10 sm:py-10">
+        <p className={`uv-dim text-muted ${text}`}>{SPECIMEN.map((s) => s.text).join(" ")}</p>
+        <p aria-hidden="true" className={`uv-reveal absolute inset-0 px-5 py-7 sm:px-10 sm:py-10 ${text}`}>
+          {SPECIMEN.map((s, i) => (
+            <span key={s.text}>
+              {i > 0 && " "}
+              <span className={s.ai ? "uv-ai" : "uv-human"}>{s.text}</span>
             </span>
-            <span
-              className={clsx(
-                "text-sm font-semibold sm:pt-1.5",
-                ai ? "text-ai-700 dark:text-ai-300" : "text-human-700 dark:text-human-300",
-              )}
-            >
-              {ai ? "Very likely AI" : "Leans human"}
-            </span>
-          </p>
-        ))}
+          ))}
+        </p>
+        <div aria-hidden="true" className="uv-beam pointer-events-none absolute inset-y-0 w-24 -translate-x-1/2">
+          <div className="absolute inset-0 bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--uv)_28%,transparent),transparent)]" />
+          <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-uv shadow-[0_0_14px_2px_var(--uv)]" />
+        </div>
       </div>
-      <figcaption className="border-t border-zinc-200 px-5 py-3 text-sm text-zinc-500 sm:px-6 dark:border-white/10 dark:text-zinc-400">
-        From the detector's mixed sample: a person wrote the first two sentences, a language model the last two.
+      <figcaption className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted">
+        <span className="flex items-center gap-2">
+          <span className="size-3 rounded-full bg-human" /> Written by a person
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="size-3 rounded-full bg-ai" /> Written by a language model
+        </span>
+        <span className="basis-full sm:basis-auto sm:flex-1">Four sentences from the detector's mixed sample.</span>
+        <button
+          type="button"
+          onClick={() => setRun((n) => n + 1)}
+          className="focus-ring inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-medium text-fg hover:bg-fg/[0.07] motion-reduce:hidden"
+        >
+          <RotateCcw className="size-3.5" aria-hidden="true" /> Scan again
+        </button>
       </figcaption>
     </figure>
   );
 }
 
-function Block({ title, children }: { title: string; children: ReactNode }) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="border-t border-zinc-300/70 dark:border-white/10">
-      <div className="mx-auto grid max-w-6xl gap-x-10 gap-y-6 px-4 py-12 sm:px-6 md:grid-cols-[14rem_1fr] md:py-16">
-        <h2 className="font-display text-2xl font-bold tracking-tight">{title}</h2>
-        <div>{children}</div>
-      </div>
+    <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
+      <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
+      <div className="mt-8 md:mt-10">{children}</div>
     </section>
+  );
+}
+
+// Visual only: both numbers are also written out as text.
+function Bar({ value, strong }: { value: number; strong?: boolean }) {
+  return (
+    <div aria-hidden="true" className="h-2 overflow-hidden rounded-full bg-fg/[0.07]">
+      <div className={strong ? "h-full rounded-full bg-uv" : "h-full rounded-full bg-muted/50"} style={{ width: `${value * 100}%` }} />
+    </div>
   );
 }
 
 export default function Home() {
   return (
     <>
-      <section className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[5fr_6fr] lg:items-center lg:gap-14 lg:py-20">
-        <div>
-          <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
-            See which sentences sound like a language model
+      <section className="mx-auto max-w-6xl px-4 pb-16 pt-12 sm:px-6 md:pb-24 md:pt-16">
+        <div className="grid gap-6 lg:grid-cols-[3fr_2fr] lg:items-end lg:gap-14">
+          <h1 className="font-display text-[clamp(2.4rem,1.5rem+3.6vw,4.4rem)] font-semibold leading-[1.02] tracking-[-0.025em]">
+            Find the sentences a language model wrote.
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-zinc-600 dark:text-zinc-300">
-            Paste any text or upload a document. A fine-tuned transformer scores every sentence in your browser and marks the ones that read as machine-written.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/detect" className="focus-ring btn">
-              Check your own text
-            </Link>
-            <a
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="focus-ring inline-flex items-center gap-2 rounded-md border border-zinc-300 px-5 py-2.5 font-semibold transition-colors hover:border-ink dark:border-white/20 dark:hover:border-white"
-            >
-              <GitHubIcon className="size-4" /> View source
-            </a>
+          <div>
+            <p className="max-w-md text-lg text-muted">
+              Paste text or drop in a document. A fine-tuned transformer reads every sentence in your browser and marks the ones that look machine-written.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/detect" className="focus-ring btn">
+                Check your own text
+              </Link>
+              <a href={REPO_URL} target="_blank" rel="noreferrer" className="focus-ring btn-ghost">
+                <GitHubIcon className="size-4" /> View source
+              </a>
+            </div>
           </div>
         </div>
-        <Specimen />
+        <div className="mt-12 md:mt-16">
+          <Specimen />
+        </div>
       </section>
 
-      <Block title="How it performs">
-        <div className="grid gap-8 sm:grid-cols-3">
-          {RESULTS.map((r) => (
-            <div key={r.label}>
-              <p className="font-display text-5xl font-bold tabular-nums">{r.value}</p>
-              <p className="mt-2 font-medium">{r.label}</p>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">{r.note}</p>
-            </div>
-          ))}
-        </div>
-        <Link to="/benchmarks" className="focus-ring mt-8 inline-block rounded font-semibold underline underline-offset-4">
-          See the full evaluation
-        </Link>
-      </Block>
+      <div className="border-y border-line bg-surface/60">
+        <Section title="How it performs">
+          <div className="grid gap-10 md:grid-cols-3 md:gap-12">
+            {RESULTS.map((r) => (
+              <div key={r.label}>
+                <p className="font-display text-6xl font-semibold tabular-nums tracking-tight">{r.format(r.value)}</p>
+                <p className="mt-2 font-medium">{r.label}</p>
+                <div className="mt-5 space-y-2">
+                  <Bar value={r.value} strong />
+                  <Bar value={r.base} />
+                </div>
+                <p className="mt-2 text-sm text-muted">
+                  {r.baseLabel}: <span className="tabular-nums">{r.format(r.base)}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+          <Link to="/benchmarks" className="focus-ring mt-10 inline-block rounded font-semibold underline decoration-uv decoration-2 underline-offset-4">
+            See the full evaluation
+          </Link>
+        </Section>
+      </div>
 
-      <Block title="What it does">
-        <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
-          {FEATURES.map(({ title, body }) => (
-            <div key={title}>
-              <dt className="font-display text-lg font-semibold">{title}</dt>
-              <dd className="mt-1 text-zinc-600 dark:text-zinc-400">{body}</dd>
-            </div>
-          ))}
-        </dl>
-      </Block>
-
-      <Block title="How it works">
-        <ol className="max-w-2xl list-decimal space-y-4 pl-5 marker:font-semibold">
-          {STEPS.map(([title, body]) => (
-            <li key={title} className="pl-1">
-              <span className="font-semibold">{title}.</span>{" "}
-              <span className="text-zinc-600 dark:text-zinc-400">{body}</span>
+      <Section title="How it works">
+        <ol className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map(([title, body], i) => (
+            <li key={title} className="border-t border-line-strong pt-5">
+              <span aria-hidden="true" className="font-display text-4xl font-medium text-uv tabular-nums">
+                {i + 1}
+              </span>
+              <h3 className="mt-3 text-lg font-semibold">{title}</h3>
+              <p className="mt-1.5 text-muted">{body}</p>
             </li>
           ))}
         </ol>
-      </Block>
+      </Section>
 
-      <Block title="Built with">
-        <p className="max-w-2xl text-zinc-600 dark:text-zinc-400">
-          {new Intl.ListFormat("en", { type: "conjunction" }).format(STACK)}.
-        </p>
-      </Block>
-
-      <Block title="The team">
-        <p className="max-w-2xl text-zinc-600 dark:text-zinc-400">
-          Built as our final-year CSC3003S capstone at the University of Cape Town. The original version (2025) ran a fine-tuned ELECTRA model on Flask and AWS. In 2026 it was rebuilt with TypeScript and a newer detector that runs entirely in the browser, with a FastAPI backend kept for the API and the benchmark.
-        </p>
-        <ul className="mt-4 space-y-1 font-medium">
-          {TEAM.map((name) => (
-            <li key={name}>{name}</li>
+      <Section title="What it does">
+        <dl className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+          {FEATURES.map(({ title, body }) => (
+            <div key={title}>
+              <dt className="text-lg font-semibold">{title}</dt>
+              <dd className="mt-1.5 max-w-prose text-muted">{body}</dd>
+            </div>
           ))}
-        </ul>
-      </Block>
+        </dl>
+      </Section>
+
+      <div className="border-t border-line">
+        <section className="mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 md:grid-cols-2 md:py-20">
+          <div>
+            <h2 className="font-display text-2xl font-semibold tracking-tight">The team</h2>
+            <p className="mt-4 max-w-prose text-muted">
+              Built as our final-year CSC3003S capstone at the University of Cape Town. The original version (2025) ran a fine-tuned ELECTRA model on Flask and AWS. In 2026 it was rebuilt with TypeScript and a newer detector that runs entirely in the browser, with a FastAPI backend kept for the API and the benchmark.
+            </p>
+            <ul className="mt-4 space-y-1 font-medium">
+              {TEAM.map((name) => (
+                <li key={name}>{name}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="font-display text-2xl font-semibold tracking-tight">Built with</h2>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {STACK.map((s) => (
+                <li key={s} className="rounded-full border border-line px-3 py-1 text-sm text-muted">
+                  {s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </div>
     </>
   );
 }
