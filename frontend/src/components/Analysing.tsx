@@ -21,7 +21,7 @@ function useElapsed() {
 }
 
 /** Rough sentence count for the progress copy; the engine does the real split. */
-const estimateSentences = (text: string) => Math.max(1, text.trim().split(/(?<=[.!?])\s+/).length);
+const estimateSentences = (text: string) => Math.max(1, text.trim().split(/[.!?]+\s+/).length);
 
 export function Analysing({ text, fileName, finishing }: { text: string; fileName?: string; finishing: boolean }) {
   const ms = useElapsed();
@@ -44,7 +44,7 @@ export function Analysing({ text, fileName, finishing }: { text: string; fileNam
     <div className="card mt-4 px-5 py-4 sm:px-6">
       {/* Screen readers hear each step once, not every counter tick. */}
       <p role="status" className="sr-only">
-        {finishing ? "Analysis complete" : `${steps[current].title}…`}
+        {finishing ? "Analysis complete" : ms > 0 ? `${steps[current].title}…` : ""}
       </p>
       <ol aria-hidden="true" className="space-y-2.5">
         {steps.map((s, i) => {
@@ -64,7 +64,7 @@ export function Analysing({ text, fileName, finishing }: { text: string; fileNam
                   done ? "border-uv bg-uv text-on-uv" : active ? "border-uv" : "border-line-strong",
                 )}
               >
-                {done ? <Check className="size-3" strokeWidth={3} /> : active && <span className="size-1.5 animate-pulse rounded-full bg-uv" />}
+                {done ? <Check className="size-3" strokeWidth={3} /> : active && <span className="size-1.5 animate-pulse rounded-full bg-uv motion-reduce:animate-none" />}
               </span>
               <span className="flex flex-1 flex-wrap justify-between gap-x-4">
                 <span className={clsx("font-medium", active && "text-fg")}>{s.title}</span>
@@ -85,7 +85,7 @@ export function AnalysisProgress({ finishing }: { finishing: boolean }) {
   return (
     <span aria-hidden="true" className="flex flex-1 items-center gap-3 text-xs text-muted tabular-nums">
       <span className="h-1 max-w-48 flex-1 overflow-hidden rounded-full bg-fg/10">
-        <span className="block h-full rounded-full bg-uv transition-[width] duration-200 ease-linear" style={{ width: `${p * 100}%` }} />
+        <span className="block h-full rounded-full bg-uv transition-[width] duration-200 ease-linear motion-reduce:transition-none" style={{ width: `${p * 100}%` }} />
       </span>
       {(ms / 1000).toFixed(1)}s
     </span>

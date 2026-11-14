@@ -75,7 +75,7 @@ describe("Detect page (in-browser model)", () => {
     await user.click(screen.getByRole("button", { name: "Mixed sample" }));
     await user.click(analyse);
 
-    expect(screen.getByText("Cleaning the text…")).toBeInTheDocument();
+    expect(await screen.findByText("Cleaning the text…")).toBeInTheDocument();
     expect(history.list()).toHaveLength(0);
     await skipAnalysis();
     expect(

@@ -39,7 +39,7 @@ export default function Detect() {
     !busy && (file !== null || (words >= limits.min_words && !tooLong));
 
   function attach(f: File | undefined) {
-    if (!f) return;
+    if (!f || busy) return;
     setError(null);
     if (f.size > limits.max_file_bytes) {
       setError(
@@ -154,7 +154,7 @@ export default function Detect() {
           />
         )}
 
-        {dragging && (
+        {dragging && !busy && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-lg font-medium text-fg">
             Drop to upload
           </div>
