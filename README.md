@@ -22,9 +22,9 @@
 
 ## Project overview and introduction
 
-A 21-second launch video: a mixed document scored sentence by sentence, disguised AI caught, and the benchmark behind it. Every score shown is a real result from the live site. Press play for sound.
+A short screen recording of the live site: load a mixed sample, watch it analyse, and read the verdict sentence by sentence.
 
-https://github.com/user-attachments/assets/04eca767-3912-4304-a29d-6a85ae88ceec
+<video src="https://github.com/Zubair-Elliot-17/AI-CD/raw/main/docs/demo.mp4" width="720" muted loop controls playsinline></video>
 
 ## Why this project matters
 
