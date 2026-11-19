@@ -48,12 +48,12 @@ function Score({ value: raw, label }: { value: number; label: string }) {
         {pct(shown)}
       </p>
       <p className="mt-1 text-sm text-muted">{label}</p>
-      <div className="mt-5 flex h-2.5 gap-0.5 overflow-hidden rounded-full">
+      <div className="mt-5 flex h-2.5 gap-0.5 overflow-hidden rounded-sm">
         <span
-          className="rounded-l-full bg-human"
+          className="bg-human"
           style={{ width: `${(1 - shown) * 100}%` }}
         />
-        <span className="flex-1 rounded-r-full bg-ai" />
+        <span className="flex-1 bg-ai" />
       </div>
       <p className="mt-1.5 flex justify-between text-xs text-muted">
         <span>Human</span>

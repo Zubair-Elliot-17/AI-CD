@@ -189,15 +189,16 @@ export default function Home() {
       </div>
 
       <Section title="How it works">
-        <dl className="divide-y divide-line border-y border-line">
+        <ol className="divide-y divide-line border-y border-line">
           {STEPS.map(([title, body]) => (
-            <div key={title} className="grid gap-1 py-5 md:grid-cols-[10rem_1fr] md:gap-10">
-              <dt className="font-mono text-sm uppercase tracking-wider">{title}</dt>
-              <dd className="max-w-prose text-muted">{body}</dd>
-            </div>
+            <li key={title} className="grid gap-1 py-5 md:grid-cols-[10rem_1fr] md:gap-10">
+              <span className="font-mono text-sm uppercase tracking-wider">{title}</span>
+              <span className="max-w-prose text-muted">{body}</span>
+            </li>
           ))}
-        </dl>
-        <dl className="mt-10 grid gap-x-12 gap-y-8 sm:grid-cols-2">
+        </ol>
+        <h3 className="mt-12 font-display text-xl font-semibold tracking-tight">What it does</h3>
+        <dl className="mt-6 grid gap-x-12 gap-y-8 sm:grid-cols-2">
           {FEATURES.map(({ title, body }) => (
             <div key={title}>
               <dt className="font-semibold">{title}</dt>

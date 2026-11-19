@@ -52,9 +52,9 @@
     --uv: #17150f;
     --on-uv: #f6f4ee;
     --human: #1a66c2;
-    --ai: #a94f00;
+    --ai: #964500;
     --danger: #c0264a;
-    --human-wash: #d3e6fb;
+    --human-wash: #d6e8fc;
     --ai-wash: #ffd89a;
     --ai-wash-soft: #ffeccb;
     --unsure-wash: #e8e5da;
@@ -211,6 +211,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  .btn-ghost:active,
+  [class*="active:scale-"]:active {
+    transform: none;
+  }
   .uv-stage,
   .scan-sweep,
   .wash-in,
