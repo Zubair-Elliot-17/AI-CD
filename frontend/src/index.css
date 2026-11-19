@@ -4,6 +4,7 @@
 @import "tailwindcss";
 @import "@fontsource-variable/fraunces/opsz.css";
 @import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -12,10 +13,13 @@
   /* Fraunces is for headings and for the writing being examined. */
   --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-serif: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 /* Semantic colours switch with the theme, so components rarely need dark: variants.
-   Violet is the lamp (interface and actions), blue is human, amber is AI. */
+   Ink is the interface and actions, blue is human, amber is AI. Nothing else carries colour. */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -38,49 +42,49 @@
 @layer base {
   /* Daylight theme. Text colours keep 4.5:1 on bg and surface; chart colours keep 3:1. */
   :root {
-    --bg: #f4f3fb;
-    --surface: #ffffff;
+    --bg: #f6f4ee;
+    --surface: #fbfaf6;
     --raised: #ffffff;
-    --line: #dedbee;
-    --line-strong: #c4bfdd;
-    --fg: #1a1638;
-    --muted: #5d5884;
-    --uv: #5b47e0;
-    --on-uv: #ffffff;
+    --line: #dedacd;
+    --line-strong: #c3beae;
+    --fg: #17150f;
+    --muted: #5f5b4f;
+    --uv: #17150f;
+    --on-uv: #f6f4ee;
     --human: #1a66c2;
-    --ai: #a94f00;
+    --ai: #964500;
     --danger: #c0264a;
     --human-wash: #d6e8fc;
     --ai-wash: #ffd89a;
     --ai-wash-soft: #ffeccb;
-    --unsure-wash: #e9e7f3;
+    --unsure-wash: #e8e5da;
 
-    --series-new: #1a1638;
+    --series-new: #17150f;
     --series-old: #1a9e6f;
     --series-raw: #c93d86;
     --class-human: #1a66c2;
     --class-ai: #c86f00;
   }
-  /* Lamp-on theme: deep indigo, so amber and blue read as fluorescence. */
+  /* Dark theme: warm near-black, so amber and blue read as fluorescence. */
   .dark {
-    --bg: #14112b;
-    --surface: #1c1840;
-    --raised: #262152;
-    --line: rgb(196 190 255 / 0.13);
-    --line-strong: rgb(196 190 255 / 0.26);
-    --fg: #ecebff;
-    --muted: #a7a3d0;
-    --uv: #8f80ff;
-    --on-uv: #120f2a;
+    --bg: #131210;
+    --surface: #1a1916;
+    --raised: #22201c;
+    --line: rgb(240 235 220 / 0.12);
+    --line-strong: rgb(240 235 220 / 0.24);
+    --fg: #f1eee4;
+    --muted: #a6a193;
+    --uv: #f1eee4;
+    --on-uv: #131210;
     --human: #6cc4ff;
     --ai: #ffb547;
     --danger: #ff7a93;
     --human-wash: rgb(108 196 255 / 0.2);
     --ai-wash: rgb(255 181 71 / 0.36);
     --ai-wash-soft: rgb(255 181 71 / 0.15);
-    --unsure-wash: rgb(196 190 255 / 0.11);
+    --unsure-wash: rgb(240 235 220 / 0.09);
 
-    --series-new: #ecebff;
+    --series-new: #f1eee4;
     --series-old: #3fcf9a;
     --series-raw: #f283c0;
     --class-human: #6cc4ff;
@@ -102,16 +106,16 @@
 }
 
 @utility card {
-  @apply rounded-lg border border-line bg-surface;
+  @apply rounded-md border border-line bg-surface;
 }
 
-/* The one primary action: the lamp colour. */
+/* The one primary action: solid ink. Pressable things scale to 0.97 on press. */
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-uv px-5 py-2.5 font-semibold text-on-uv transition hover:brightness-110 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:brightness-100;
+  @apply inline-flex items-center justify-center gap-2 rounded-md bg-uv px-5 py-2.5 font-semibold text-on-uv transition-[transform,opacity] duration-150 ease-out hover:opacity-85 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:opacity-45 disabled:active:scale-100;
 }
 
 @utility btn-ghost {
-  @apply inline-flex items-center justify-center gap-2 rounded-full border border-line-strong px-5 py-2.5 font-semibold transition-colors hover:border-fg/50 hover:bg-fg/5;
+  @apply inline-flex items-center justify-center gap-2 rounded-md border border-line-strong px-5 py-2.5 font-semibold transition-[transform,background-color,border-color] duration-150 ease-out hover:border-fg/50 hover:bg-fg/5 active:scale-[0.97];
 }
 
 @utility focus-ring {
@@ -133,7 +137,7 @@
   }
 }
 .uv-stage {
-  animation: uv-sweep 3.6s cubic-bezier(0.5, 0.05, 0.4, 1) 0.6s both;
+  animation: uv-sweep 3.6s cubic-bezier(0.77, 0, 0.175, 1) 0.6s both;
 }
 /* Two stacked copies of the text: the marked one shows left of the beam, the plain one right of it. */
 .uv-reveal {
@@ -160,7 +164,6 @@
 .dark .uv-ai {
   color: var(--ai);
   background-color: var(--ai-wash-soft);
-  text-shadow: 0 0 0.45em rgb(255 181 71 / 0.55);
 }
 .dark .uv-human {
   color: var(--human);
@@ -184,7 +187,7 @@
     var(--uv) 99.4%,
     transparent 100%
   );
-  animation: scan 1.9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: scan 1.9s linear infinite;
 }
 
 /* Results: highlights wash in sentence by sentence. */
@@ -200,14 +203,19 @@
   }
 }
 .wash-in {
-  animation: wash-in 0.6s ease-out both;
+  animation: wash-in 0.5s var(--ease-out) both;
   animation-delay: calc(min(var(--i, 0), 30) * 45ms + 250ms);
 }
 .rise {
-  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: rise 0.45s var(--ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  .btn-ghost:active,
+  [class*="active:scale-"]:active {
+    transform: none;
+  }
   .uv-stage,
   .scan-sweep,
   .wash-in,

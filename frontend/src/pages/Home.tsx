@@ -96,23 +96,22 @@ function Specimen() {
             </span>
           ))}
         </p>
-        <div aria-hidden="true" className="uv-beam pointer-events-none absolute inset-y-0 w-24 -translate-x-1/2">
-          <div className="absolute inset-0 bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--uv)_28%,transparent),transparent)]" />
-          <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-uv shadow-[0_0_14px_2px_var(--uv)]" />
+        <div aria-hidden="true" className="uv-beam pointer-events-none absolute inset-y-0 w-px -translate-x-1/2">
+          <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-fg" />
         </div>
       </div>
       <figcaption className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted">
         <span className="flex items-center gap-2">
-          <span className="size-3 rounded-full bg-human" /> Written by a person
+          <span className="size-3 rounded-sm bg-human" /> Written by a person
         </span>
         <span className="flex items-center gap-2">
-          <span className="size-3 rounded-full bg-ai" /> Written by a language model
+          <span className="size-3 rounded-sm bg-ai" /> Written by a language model
         </span>
         <span className="basis-full sm:basis-auto sm:flex-1">Four sentences from the detector's mixed sample.</span>
         <button
           type="button"
           onClick={() => setRun((n) => n + 1)}
-          className="focus-ring inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-medium text-fg hover:bg-fg/[0.07] motion-reduce:hidden"
+          className="focus-ring inline-flex items-center gap-1.5 rounded-md px-2 py-1 font-medium text-fg transition-[transform,background-color] duration-150 ease-out hover:bg-fg/[0.07] active:scale-[0.97] motion-reduce:hidden"
         >
           <RotateCcw className="size-3.5" aria-hidden="true" /> Scan again
         </button>
@@ -133,8 +132,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 // Visual only: both numbers are also written out as text.
 function Bar({ value, strong }: { value: number; strong?: boolean }) {
   return (
-    <div aria-hidden="true" className="h-2 overflow-hidden rounded-full bg-fg/[0.07]">
-      <div className={strong ? "h-full rounded-full bg-uv" : "h-full rounded-full bg-muted/50"} style={{ width: `${value * 100}%` }} />
+    <div aria-hidden="true" className="h-2 overflow-hidden bg-fg/[0.07]">
+      <div className={strong ? "h-full bg-uv" : "h-full bg-muted/50"} style={{ width: `${value * 100}%` }} />
     </div>
   );
 }
@@ -190,24 +189,19 @@ export default function Home() {
       </div>
 
       <Section title="How it works">
-        <ol className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map(([title, body], i) => (
-            <li key={title} className="border-t border-line-strong pt-5">
-              <span aria-hidden="true" className="font-display text-4xl font-medium text-uv tabular-nums">
-                {i + 1}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold">{title}</h3>
-              <p className="mt-1.5 text-muted">{body}</p>
+        <ol className="divide-y divide-line border-y border-line">
+          {STEPS.map(([title, body]) => (
+            <li key={title} className="grid gap-1 py-5 md:grid-cols-[10rem_1fr] md:gap-10">
+              <span className="font-mono text-sm uppercase tracking-wider">{title}</span>
+              <span className="max-w-prose text-muted">{body}</span>
             </li>
           ))}
         </ol>
-      </Section>
-
-      <Section title="What it does">
-        <dl className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
+        <h3 className="mt-12 font-display text-xl font-semibold tracking-tight">What it does</h3>
+        <dl className="mt-6 grid gap-x-12 gap-y-8 sm:grid-cols-2">
           {FEATURES.map(({ title, body }) => (
             <div key={title}>
-              <dt className="text-lg font-semibold">{title}</dt>
+              <dt className="font-semibold">{title}</dt>
               <dd className="mt-1.5 max-w-prose text-muted">{body}</dd>
             </div>
           ))}
@@ -229,13 +223,7 @@ export default function Home() {
           </div>
           <div>
             <h2 className="font-display text-2xl font-semibold tracking-tight">Built with</h2>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {STACK.map((s) => (
-                <li key={s} className="rounded-full border border-line px-3 py-1 text-sm text-muted">
-                  {s}
-                </li>
-              ))}
-            </ul>
+            <p className="mt-4 font-mono text-sm leading-7 text-muted">{STACK.join(" · ")}</p>
           </div>
         </section>
       </div>
