@@ -34,7 +34,7 @@ export default function History() {
             onClick={() => {
               if (confirm("Delete all saved analyses?")) history.clear();
             }}
-            className="focus-ring inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10"
+            className="focus-ring inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10"
           >
             <Trash2 className="size-4" /> Clear all
           </button>
@@ -85,7 +85,7 @@ export default function History() {
                   <p className="mt-0.5 text-xs text-muted">
                     <span
                       className={clsx(
-                        "mr-2 rounded-full px-2 py-0.5 font-semibold ring-1 ring-inset",
+                        "mr-2 rounded px-2 py-0.5 font-semibold ring-1 ring-inset",
                         style.badge,
                       )}
                     >
@@ -99,7 +99,7 @@ export default function History() {
                   type="button"
                   onClick={() => history.remove(e.id)}
                   aria-label="Delete this analysis"
-                  className="focus-ring relative z-10 rounded-full p-2 text-muted opacity-100 hover:bg-danger/10 hover:text-danger sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+                  className="focus-ring relative z-10 rounded-md p-2 text-muted opacity-100 hover:bg-danger/10 hover:text-danger sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                 >
                   <Trash2 className="size-4" />
                 </button>

@@ -103,7 +103,7 @@ export default function Detect() {
       <div
         className={clsx(
           "card relative overflow-hidden transition-colors",
-          dragging && "border-uv bg-uv/[0.06]",
+          dragging && "border-fg bg-fg/[0.04]",
         )}
         onDragOver={(e) => {
           e.preventDefault();
@@ -125,7 +125,7 @@ export default function Detect() {
               type="button"
               onClick={() => setFile(null)}
               disabled={busy}
-              className="focus-ring inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-muted hover:bg-fg/[0.07] hover:text-fg disabled:opacity-40"
+              className="focus-ring inline-flex items-center gap-1 rounded-md active:scale-[0.97] transition-[transform,color,background-color] duration-150 ease-out px-3 py-1.5 text-sm text-muted hover:bg-fg/[0.07] hover:text-fg disabled:opacity-40"
             >
               <X className="size-4" aria-hidden="true" /> Remove file
             </button>
@@ -175,7 +175,7 @@ export default function Detect() {
             type="button"
             onClick={() => fileInput.current?.click()}
             disabled={busy}
-            className="focus-ring inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-muted hover:bg-fg/[0.07] hover:text-fg disabled:opacity-40"
+            className="focus-ring inline-flex items-center gap-1.5 rounded-md active:scale-[0.97] transition-[transform,color,background-color] duration-150 ease-out px-3 py-2 text-sm font-medium text-muted hover:bg-fg/[0.07] hover:text-fg disabled:opacity-40"
           >
             <FileUp className="size-4" aria-hidden="true" /> Upload file
           </button>
@@ -217,7 +217,7 @@ export default function Detect() {
               setError(null);
             }}
             disabled={busy}
-            className="focus-ring rounded-full border border-line-strong px-3 py-1 text-muted transition-colors hover:border-uv hover:text-fg disabled:opacity-40"
+            className="focus-ring rounded-md border border-line-strong px-3 py-1 text-muted transition-[transform,color,border-color] duration-150 ease-out active:scale-[0.97] hover:border-fg hover:text-fg disabled:opacity-40"
           >
             {s.label}
           </button>

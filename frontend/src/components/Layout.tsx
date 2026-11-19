@@ -26,7 +26,7 @@ function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
-      className="focus-ring rounded-full p-2 text-muted transition-colors hover:bg-fg/[0.07] hover:text-fg"
+      className="focus-ring rounded-md p-2 text-muted transition-[color,background-color,transform] duration-150 ease-out hover:bg-fg/[0.07] hover:text-fg active:scale-[0.94]"
     >
       {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
     </button>
@@ -35,8 +35,8 @@ function ThemeToggle() {
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   clsx(
-    "focus-ring rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors sm:px-3.5",
-    isActive ? "bg-uv/15 text-fg" : "text-muted hover:text-fg",
+    "focus-ring rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors duration-150 sm:px-3.5",
+    isActive ? "bg-fg/10 text-fg" : "text-muted hover:text-fg",
   );
 
 export function Layout() {
@@ -64,7 +64,7 @@ export function Layout() {
             target="_blank"
             rel="noreferrer"
             aria-label="Source code on GitHub"
-            className="focus-ring rounded-full p-2 text-muted transition-colors hover:bg-fg/[0.07] hover:text-fg"
+            className="focus-ring rounded-md p-2 text-muted transition-[color,background-color,transform] duration-150 ease-out hover:bg-fg/[0.07] hover:text-fg active:scale-[0.94]"
           >
             <GitHubIcon className="size-5" />
           </a>

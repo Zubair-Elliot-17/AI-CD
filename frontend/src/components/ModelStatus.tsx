@@ -31,7 +31,7 @@ export function ModelStatus({ status }: { status: ModelState }) {
         <span
           className={clsx(
             "size-2 shrink-0 rounded-full",
-            status.state === "ready" && "bg-uv shadow-[0_0_8px_var(--uv)]",
+            status.state === "ready" && "bg-human",
             ["checking", "waking", "downloading"].includes(status.state) && "animate-pulse bg-muted",
             status.state === "offline" && "bg-danger",
           )}

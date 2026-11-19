@@ -145,7 +145,7 @@ export function ResultView({ result }: { result: DetectResult }) {
           <p className="mt-2 text-muted">{copy.blurb}</p>
           <span
             className={clsx(
-              "mt-3 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset",
+              "mt-3 inline-flex rounded px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset",
               style.badge,
             )}
           >
